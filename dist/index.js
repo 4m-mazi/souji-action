@@ -29652,17 +29652,14 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = void 0;
 const core = __importStar(__nccwpck_require__(9093));
 const github = __importStar(__nccwpck_require__(5942));
-const getActionsCacheList = (octokit, repo, ref) => {
+const deleteRefActionsCache = async (octokit, repo, ref) => {
     // Get the list of cache IDs
     // https://github.com/octokit/plugin-paginate-rest.js#octokitpaginate
     const iterator = octokit.paginate.iterator(octokit.rest.actions.getActionsCacheList, {
         ...repo,
-        ref: ref
+        ref
     });
-    return iterator;
-};
-const deleteRefActionsCache = async (octokit, repo, ref) => {
-    const iterator = getActionsCacheList(octokit, repo, ref);
+    // https://github.com/octokit/octokit.js/tree/b831b6bce43d56b97e25a996e1b43525486d8bd3?tab=readme-ov-file#pagination
     for await (const { data: cacheList } of iterator) {
         for (const { id: cacheId } of cacheList) {
             if (!cacheId)
@@ -29682,15 +29679,31 @@ async function run() {
     try {
         const token = core.getInput('repo-token');
         const octokit = github.getOctokit(token);
-        // get context
-        // MEMO: git contextからheadRefは取得できなそう
-        const { repo, ref } = github.context;
-        const headRef = process.env.GITHUB_HEAD_REF;
-        core.debug(`headRef: ${headRef}`);
-        if (headRef) {
-            deleteRefActionsCache(octokit, repo, headRef);
+        // get repostiory information
+        const { repo } = github.context;
+        // MEMO: payloadから取得できるのは確認したけど、型何もついてない
+        const payload = github.context.payload;
+        const prNumber = payload.pull_request?.number;
+        const headRef = payload.pull_request?.head?.ref;
+        const ref = payload.ref;
+        if (prNumber) {
+            // fire when event is pull_request or pull_request_target or pull_request_review or pull_request_review_comment
+            core.info(`delete cache for refs/pull/${prNumber}/merge`);
+            await deleteRefActionsCache(octokit, repo, `refs/pull/${prNumber}/merge`);
+            core.info('done ✅');
         }
-        deleteRefActionsCache(octokit, repo, ref);
+        if (headRef) {
+            // fire when event is pull_request or pull_request_target or pull_request_review or pull_request_review_comment
+            core.info(`delete cache for refs/heads/${headRef}`);
+            await deleteRefActionsCache(octokit, repo, `refs/heads/${headRef}`);
+            core.info('done ✅');
+        }
+        if (ref) {
+            // fire when event is workflow_dispatch or push
+            core.info(`delete cache for ${ref}`);
+            await deleteRefActionsCache(octokit, repo, ref);
+            core.info('done ✅');
+        }
     }
     catch (error) {
         // Fail the workflow run if an error occurs

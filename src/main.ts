@@ -16,6 +16,7 @@ const deleteRefActionsCache = async (
     }
   )
 
+  // https://github.com/octokit/octokit.js/tree/b831b6bce43d56b97e25a996e1b43525486d8bd3?tab=readme-ov-file#pagination
   for await (const { data: cacheList } of iterator) {
     for (const { id: cacheId } of cacheList) {
       if (!cacheId) continue
@@ -35,17 +36,34 @@ export async function run(): Promise<void> {
   try {
     const token = core.getInput('repo-token')
     const octokit = github.getOctokit(token)
-    // get context
-    // MEMO: git contextからheadRefは取得できなそう
-    const { repo, ref } = github.context
 
-    const headRef = process.env.GITHUB_HEAD_REF
-    core.debug(`headRef: ${headRef}`)
+    // get repostiory information
+    const { repo } = github.context
 
-    if (headRef) {
-      deleteRefActionsCache(octokit, repo, headRef)
+    // MEMO: payloadから取得できるのは確認したけど、型何もついてない
+    const payload = github.context.payload
+    const prNumber = payload.pull_request?.number as number | undefined
+    const headRef = payload.pull_request?.head?.ref as string | undefined
+    const ref = payload.ref as string | undefined
+
+    if (prNumber) {
+      // fire when event is pull_request or pull_request_target or pull_request_review or pull_request_review_comment
+      core.info(`delete cache for refs/pull/${prNumber}/merge`)
+      await deleteRefActionsCache(octokit, repo, `refs/pull/${prNumber}/merge`)
+      core.info('done ✅')
     }
-    deleteRefActionsCache(octokit, repo, ref)
+    if (headRef) {
+      // fire when event is pull_request or pull_request_target or pull_request_review or pull_request_review_comment
+      core.info(`delete cache for refs/heads/${headRef}`)
+      await deleteRefActionsCache(octokit, repo, `refs/heads/${headRef}`)
+      core.info('done ✅')
+    }
+    if (ref) {
+      // fire when event is workflow_dispatch or push
+      core.info(`delete cache for ${ref}`)
+      await deleteRefActionsCache(octokit, repo, ref)
+      core.info('done ✅')
+    }
   } catch (error) {
     // Fail the workflow run if an error occurs
     if (error instanceof Error) core.setFailed(error.message)
