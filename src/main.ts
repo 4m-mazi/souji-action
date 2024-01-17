@@ -19,50 +19,44 @@ export async function run(): Promise<void> {
     if (headRef) {
       // Get the list of cache IDs
       // https://github.com/octokit/plugin-paginate-rest.js#octokitpaginate
-      const cacheIdList = await octokit.paginate(
+      const iterator = octokit.paginate.iterator(
         octokit.rest.actions.getActionsCacheList,
         {
           ...repo,
-          ref
-        },
-        response => response.data.flatMap(cache => cache.id ?? [])
+          ref: headRef
+        }
       )
-      if (cacheIdList.length === 0) {
-        core.info('No cache found.')
-        return
-      }
 
-      // Delete the caches
-      cacheIdList.forEach(async id => {
-        await octokit.rest.actions.deleteActionsCacheById({
-          ...repo,
-          cache_id: id
-        })
-      })
+      for await (const { data: cacheList } of iterator) {
+        for (const { id: cacheId } of cacheList) {
+          if (!cacheId) continue
+          await octokit.rest.actions.deleteActionsCacheById({
+            ...repo,
+            cache_id: cacheId
+          })
+        }
+      }
     }
 
     // Get the list of cache IDs
     // https://github.com/octokit/plugin-paginate-rest.js#octokitpaginate
-    const cacheIdList = await octokit.paginate(
+    const iterator = octokit.paginate.iterator(
       octokit.rest.actions.getActionsCacheList,
       {
         ...repo,
         ref
-      },
-      response => response.data.flatMap(cache => cache.id ?? [])
+      }
     )
-    if (cacheIdList.length === 0) {
-      core.info('No cache found.')
-      return
-    }
 
-    // Delete the caches
-    cacheIdList.forEach(async id => {
-      await octokit.rest.actions.deleteActionsCacheById({
-        ...repo,
-        cache_id: id
-      })
-    })
+    for await (const { data: cacheList } of iterator) {
+      for (const { id: cacheId } of cacheList) {
+        if (!cacheId) continue
+        await octokit.rest.actions.deleteActionsCacheById({
+          ...repo,
+          cache_id: cacheId
+        })
+      }
+    }
   } catch (error) {
     // Fail the workflow run if an error occurs
     if (error instanceof Error) core.setFailed(error.message)
