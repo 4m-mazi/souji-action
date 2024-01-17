@@ -30,7 +30,7 @@ jobs:
 
       - name: Install Dependencies
         id: pnpm-install
-        run: pnpm install --fozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Check Format
         id: pnpm-format-check
