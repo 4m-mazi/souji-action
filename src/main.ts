@@ -1,29 +1,20 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
 
-const getActionsCacheList = (
+const deleteRefActionsCache = async (
   octokit: ReturnType<typeof github.getOctokit>,
   repo: { owner: string; repo: string },
   ref: string
-) => {
+): Promise<void> => {
   // Get the list of cache IDs
   // https://github.com/octokit/plugin-paginate-rest.js#octokitpaginate
   const iterator = octokit.paginate.iterator(
     octokit.rest.actions.getActionsCacheList,
     {
       ...repo,
-      ref: ref
+      ref
     }
   )
-  return iterator
-}
-
-const deleteRefActionsCache = async (
-  octokit: ReturnType<typeof github.getOctokit>,
-  repo: { owner: string; repo: string },
-  ref: string
-) => {
-  const iterator = getActionsCacheList(octokit, repo, ref)
 
   for await (const { data: cacheList } of iterator) {
     for (const { id: cacheId } of cacheList) {
