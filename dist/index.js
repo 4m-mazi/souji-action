@@ -29661,7 +29661,19 @@ const getActionsCacheList = (octokit, repo, ref) => {
     });
     return iterator;
 };
-const deleteActionsCache = (octokit, repo, cacheId) => { };
+const deleteRefActionsCache = async (octokit, repo, ref) => {
+    const iterator = getActionsCacheList(octokit, repo, ref);
+    for await (const { data: cacheList } of iterator) {
+        for (const { id: cacheId } of cacheList) {
+            if (!cacheId)
+                continue;
+            await octokit.rest.actions.deleteActionsCacheById({
+                ...repo,
+                cache_id: cacheId
+            });
+        }
+    }
+};
 /**
  * The main function for the action.
  * @returns {Promise<void>} Resolves when the action is complete.
@@ -29676,34 +29688,9 @@ async function run() {
         const headRef = process.env.GITHUB_HEAD_REF;
         core.debug(`headRef: ${headRef}`);
         if (headRef) {
-            const iterator = getActionsCacheList(octokit, repo, headRef);
-            for await (const { data: cacheList } of iterator) {
-                for (const { id: cacheId } of cacheList) {
-                    if (!cacheId)
-                        continue;
-                    await octokit.rest.actions.deleteActionsCacheById({
-                        ...repo,
-                        cache_id: cacheId
-                    });
-                }
-            }
+            deleteRefActionsCache(octokit, repo, headRef);
         }
-        // Get the list of cache IDs
-        // https://github.com/octokit/plugin-paginate-rest.js#octokitpaginate
-        const iterator = octokit.paginate.iterator(octokit.rest.actions.getActionsCacheList, {
-            ...repo,
-            ref
-        });
-        for await (const { data: cacheList } of iterator) {
-            for (const { id: cacheId } of cacheList) {
-                if (!cacheId)
-                    continue;
-                await octokit.rest.actions.deleteActionsCacheById({
-                    ...repo,
-                    cache_id: cacheId
-                });
-            }
-        }
+        deleteRefActionsCache(octokit, repo, ref);
     }
     catch (error) {
         // Fail the workflow run if an error occurs
