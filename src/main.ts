@@ -42,7 +42,7 @@ export async function run(): Promise<void> {
 
     // MEMO: payloadから取得できるのは確認したけど、型何もついてない
     const payload = github.context.payload
-    const prNumber = payload.pull_request?.number as number | undefined
+    const prNumber = payload.pull_request?.number
     const headRef = payload.pull_request?.head?.ref as string | undefined
     const ref = payload.ref as string | undefined
 
