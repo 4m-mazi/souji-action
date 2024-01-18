@@ -5,7 +5,7 @@
 [![Check dist/](https://github.com/actions/typescript-action/actions/workflows/check-dist.yml/badge.svg)](https://github.com/actions/typescript-action/actions/workflows/check-dist.yml)
 [![CodeQL](https://github.com/actions/typescript-action/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/actions/typescript-action/actions/workflows/codeql-analysis.yml)
 
-Souji Action deletes all Github Actions Caches created for branches related to
+Souji Action deletes all GitHub Actions Caches created for branches related to
 the context of the triggered workflow event.
 
 ## Usage
