@@ -1,12 +1,22 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
+import * as v from 'valibot'
 import { getRef } from './ref'
+import { DryRunSchema } from './schema'
 
 const deleteRefActionsCaches = async (
   octokit: ReturnType<typeof github.getOctokit>,
   repo: { owner: string; repo: string },
   ref: string
 ): Promise<void> => {
+  const isDryRun = v.parse(
+    DryRunSchema,
+    core.getInput('dry-run', { trimWhitespace: true })
+  )
+  const dryRunPrefix = isDryRun ? 'DRY-RUN MODE ' : ''
+
+  core.info(`${dryRunPrefix}⌛ Deleting caches with scope ${ref}`)
+
   // Get the list of cache IDs
   // https://github.com/octokit/plugin-paginate-rest.js#octokitpaginate
   const iterator = octokit.paginate.iterator(
@@ -21,11 +31,13 @@ const deleteRefActionsCaches = async (
   for await (const { data: cacheList } of iterator) {
     for (const cache of cacheList) {
       if (!cache.id) continue
-      core.info(`   - Cache with key ${cache.key}`)
-      await octokit.rest.actions.deleteActionsCacheById({
-        ...repo,
-        cache_id: cache.id
-      })
+      core.info(`${dryRunPrefix}   - Cache with key ${cache.key}`)
+      if (!isDryRun) {
+        await octokit.rest.actions.deleteActionsCacheById({
+          ...repo,
+          cache_id: cache.id
+        })
+      }
     }
   }
 }
@@ -43,7 +55,6 @@ export async function run(): Promise<void> {
     const { repo, eventName, payload } = github.context
 
     const ref = getRef({ eventName, payload })
-
     if (ref === null) {
       core.info('🤔 Could not determine deletion target.')
       core.info(
@@ -51,9 +62,10 @@ export async function run(): Promise<void> {
       )
       return
     }
-    core.info(`⌛ Deleting caches on ${ref}`)
+
     await deleteRefActionsCaches(octokit, repo, ref)
-    core.info('✅ Done')
+
+    core.info(`✅ Done`)
   } catch (error) {
     // Fail the workflow run if an error occurs
     if (error instanceof Error) {

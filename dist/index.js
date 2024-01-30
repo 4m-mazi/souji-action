@@ -29678,8 +29678,13 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.run = void 0;
 const core = __importStar(__nccwpck_require__(9093));
 const github = __importStar(__nccwpck_require__(5942));
+const v = __importStar(__nccwpck_require__(6786));
 const ref_1 = __nccwpck_require__(2636);
+const schema_1 = __nccwpck_require__(3731);
 const deleteRefActionsCaches = async (octokit, repo, ref) => {
+    const isDryRun = v.parse(schema_1.DryRunSchema, core.getInput('dry-run', { trimWhitespace: true }));
+    const dryRunPrefix = isDryRun ? 'DRY-RUN MODE ' : '';
+    core.info(`${dryRunPrefix}⌛ Deleting caches on ${ref}`);
     // Get the list of cache IDs
     // https://github.com/octokit/plugin-paginate-rest.js#octokitpaginate
     const iterator = octokit.paginate.iterator(octokit.rest.actions.getActionsCacheList, {
@@ -29691,11 +29696,13 @@ const deleteRefActionsCaches = async (octokit, repo, ref) => {
         for (const cache of cacheList) {
             if (!cache.id)
                 continue;
-            core.info(`   - Cache with key ${cache.key}`);
-            await octokit.rest.actions.deleteActionsCacheById({
-                ...repo,
-                cache_id: cache.id
-            });
+            core.info(`${dryRunPrefix}   - Cache with key ${cache.key}`);
+            if (!isDryRun) {
+                await octokit.rest.actions.deleteActionsCacheById({
+                    ...repo,
+                    cache_id: cache.id
+                });
+            }
         }
     }
 };
@@ -29715,9 +29722,8 @@ async function run() {
             core.info('ℹ️ If you suspect this is a bug, please consider raising an issue to help us address it promptly.');
             return;
         }
-        core.info(`⌛ Deleting caches on ${ref}`);
         await deleteRefActionsCaches(octokit, repo, ref);
-        core.info('✅ Done');
+        core.info(`✅ Done`);
     }
     catch (error) {
         // Fail the workflow run if an error occurs
@@ -29822,11 +29828,12 @@ exports.getRef = getRef;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.NullableStringSchema = exports.OptionalStringSchema = exports.StringSchema = void 0;
+exports.DryRunSchema = exports.NullableStringSchema = exports.OptionalStringSchema = exports.StringSchema = void 0;
 const valibot_1 = __nccwpck_require__(6786);
 exports.StringSchema = (0, valibot_1.string)();
 exports.OptionalStringSchema = (0, valibot_1.optional)((0, valibot_1.string)());
 exports.NullableStringSchema = (0, valibot_1.nullable)((0, valibot_1.string)());
+exports.DryRunSchema = (0, valibot_1.coerce)((0, valibot_1.boolean)('The dry-run option must be either "true" or "false".'), input => JSON.parse(`${input}`));
 
 
 /***/ }),
