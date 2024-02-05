@@ -9,7 +9,7 @@ Souji Action is a GitHub Action that deletes all GitHub Actions Caches related
 to the context of the triggered workflow event, without any configuration
 required.
 
-# Why
+## Why
 
 GitHub Actions Caches have
 [branch scope restriction](https://docs.github.com/en/actions/using-workflows/caching-dependencies-to-speed-up-workflows#restrictions-for-accessing-a-cache)
