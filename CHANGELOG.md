@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/4m-mazi/souji-action/compare/v1.1.0...v1.1.1) (2024-03-25)
+
+
+### Dependencies
+
+* bump valibot from 0.27.1 to 0.28.1 ([#42](https://github.com/4m-mazi/souji-action/issues/42)) ([de527f3](https://github.com/4m-mazi/souji-action/commit/de527f3f54ce54f62199a55ba01a28ab64a95078))
+* bump valibot from 0.29.0 to 0.30.0 ([#55](https://github.com/4m-mazi/souji-action/issues/55)) ([e0a39ae](https://github.com/4m-mazi/souji-action/commit/e0a39ae6da96b7316d3c965dc528c2ac78d8c146))
+
 ## [1.1.0](https://github.com/4m-mazi/souji-action/compare/v1.0.0...v1.1.0) (2024-02-07)
 
 
