@@ -88,7 +88,7 @@ All inputs are optional.
 ### `branch-names` default values
 
 If `branch-names` is not specified, the value derived from the context of the
-event is used.
+event is used as the default value.
 
 > [!IMPORTANT]\
 > The branch(ref) to be deleted is determined by the context of the event.\
