@@ -78,41 +78,47 @@ This will clear the following cache:
 > branch-names: main refs/pull/123/merge refs/tags/1.0.0
 > ```
 
-| Name           | Description                                                                                            | Type    | Default |
-| :------------- | :----------------------------------------------------------------------------------------------------- | :------ | :------ |
-| `dry-run`      | If `true`, dry-run caches deletion.                                                                    | Boolean | `false` |
-| `branch-names` | List of branch(ref) names with caches to be deleted (e.g., `main refs/pull/123/merge refs/tags/1.0.0`) | List    | N/A     |
+All inputs are optional.
 
-## Supported events
+| Name           | Description                                                                                            | Type    | Default                                                      |
+| :------------- | :----------------------------------------------------------------------------------------------------- | :------ | :----------------------------------------------------------- |
+| `dry-run`      | If `true`, dry-run caches deletion.                                                                    | Boolean | `false`                                                      |
+| `branch-names` | List of branch(ref) names with caches to be deleted (e.g., `main refs/pull/123/merge refs/tags/1.0.0`) | List    | [#branch-names-default-values](#branch-names-default-values) |
+
+### `branch-names` default values
+
+If `branch-names` is not specified, the value derived from the context of the
+event is used.
 
 > [!IMPORTANT]\
 > The branch(ref) to be deleted is determined by the context of the event.\
 > Please note that this is not the same as `$GITHUB_REF`(`github.ref`).
 
-| event                         | branch name format of caches to be deleted |
-| :---------------------------- | :----------------------------------------- |
-| `check_run`                   | `<branch name>`                            |
-| `check_suite`                 | `<branch name>`                            |
-| `create` (branch)             | `<branch name>`                            |
-| `create` (tag)                | `refs/tags/<tag name>`                     |
-| `delete` (branch)             | `<branch name>`                            |
-| `delete` (tag)                | `refs/tags/<tag name>`                     |
-| `deployment_status`           | `<branch name>`                            |
-| `issue_comment` [^1]          | `refs/pull/<number>/merge`                 |
-| `merge_group`                 | `<branch name>`                            |
-| `pull_request` [^2]           | `refs/pull/<number>/merge`                 |
-| `pull_request_review`         | `refs/pull/<number>/merge`                 |
-| `pull_request_review_comment` | `refs/pull/<number>/merge`                 |
-| `pull_request_target`         | `refs/pull/<number>/merge`                 |
-| `push` (branch)               | `<branch name>`                            |
-| `push` (tag)                  | `refs/tags/<tag name>`                     |
-| `registry_package`            | `refs/tags/<tag name>`                     |
-| `release`                     | `refs/tags/<tag name>`                     |
-| `workflow_dispatch` (branch)  | `<branch name>`                            |
-| `workflow_dispatch` (tag)     | `refs/tags/<tag name>`                     |
-| `workflow_run`                | `<branch name>`                            |
+| event                         | branch name format of caches to be deleted | concrete example                                                         |
+| :---------------------------- | :----------------------------------------- | :----------------------------------------------------------------------- |
+| `check_run`                   | `<branch name>`                            | `main`                                                                   |
+| `check_suite`                 | `<branch name>`                            | `main`                                                                   |
+| `create` (branch)             | `<branch name>`                            | `test`                                                                   |
+| `create` (tag)                | `refs/tags/<tag name>`                     | `refs/tags/v2.3.4`                                                       |
+| `delete` (branch)             | `<branch name>`                            | `gh-readonly-queue/main/pr-813-bef2983ddf2ae45fbf6ef6c788732c6bc7797cae` |
+| `delete` (tag)                | `refs/tags/<tag name>`                     | `refs/tags/v2.3.4`                                                       |
+| `deployment_status`           | `<branch name>`                            | `test`                                                                   |
+| `issue_comment` [^1]          | `refs/pull/<number>/merge`                 | `refs/pull/123/merge`                                                    |
+| `merge_group`                 | `<branch name>`                            | `gh-readonly-queue/main/pr-746-48d2a411fc179d6938d5c57a5040d1b38f3eb198` |
+| `pull_request` [^2]           | `refs/pull/<number>/merge`                 | `refs/pull/123/merge`                                                    |
+| `pull_request_review`         | `refs/pull/<number>/merge`                 | `refs/pull/123/merge`                                                    |
+| `pull_request_review_comment` | `refs/pull/<number>/merge`                 | `refs/pull/123/merge`                                                    |
+| `pull_request_target`         | `refs/pull/<number>/merge`                 | `refs/pull/123/merge`                                                    |
+| `push` (branch)               | `<branch name>`                            | `test`                                                                   |
+| `push` (tag)                  | `refs/tags/<tag name>`                     | `refs/tags/v2.3.4`                                                       |
+| `registry_package`            | `refs/tags/<tag name>`                     | `refs/tags/v2.3.4`                                                       |
+| `release`                     | `refs/tags/<tag name>`                     | `refs/tags/v2.3.4`                                                       |
+| `workflow_dispatch` (branch)  | `<branch name>`                            | `test`                                                                   |
+| `workflow_dispatch` (tag)     | `refs/tags/<tag name>`                     | `refs/tags/v2.3.4`                                                       |
+| `workflow_run`                | `<branch name>`                            | `main`                                                                   |
 
 [^1]: Only works with pull request comments.
+
 [^2]:
     This action doesn't work when triggered by a `pull_request` event if the
     pull request is a cross-repository pull request.\
