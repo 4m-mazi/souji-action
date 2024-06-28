@@ -1,3 +1,69 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json"
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:best-practices",
+    "config:js-app",
+    ":disablePrControls",
+    ":labels(dependencies)",
+    ":maintainLockFilesWeekly",
+    ":pathSemanticCommitType(.github/workflows/**, ci)",
+    ":prHourlyLimitNone",
+    ":rebaseStalePrs",
+    ":semanticCommits",
+    "customManagers:githubActionsVersions",
+    "security:openssf-scorecard"
+  ],
+  "platformAutomerge": true,
+  "automergeStrategy": "squash",
+  "assigneesFromCodeOwners": true,
+  "commitBodyTable": true,
+  "commitMessageAction": "bump",
+  "commitMessageExtra": "from {{#if currentValue}}{{{currentValue}}}{{else}}{{{currentDigestShort}}}{{/if}} to {{#if isPinDigest}}{{{newDigestShort}}}{{else}}{{#if isSingleVersion}}{{prettyNewVersion}}{{else}}{{#if newValue}}{{{newValue}}}{{else}}{{{newDigestShort}}}{{/if}}{{/if}}{{/if}}",
+  "commitMessageTopic": "{{depName}}",
+  "prConcurrentLimit": 3,
+  "packageRules": [
+    {
+      "matchDepTypes": ["dependencies", "require"],
+      "semanticCommitType": "deps",
+      "semanticCommitScope": null
+    },
+    {
+      "matchDepTypes": ["devDependencies"],
+      "semanticCommitType": "chore",
+      "semanticCommitScope": "deps-dev"
+    },
+    {
+      "matchFileNames": [".github/workflows/_souji.yml"],
+      "semanticCommitType": "deps",
+      "semanticCommitScope": "workflow"
+    },
+    {
+      "matchManagers": ["npm"],
+      "addLabels": ["javascript"],
+      "postUpgradeTasks": {
+        "commands": [
+          "pnpm install --frozen-lockfile --ignore-scripts",
+          "pnpm run build"
+        ]
+      }
+    },
+    {
+      "matchManagers": ["github-actions"],
+      "addLabels": ["github_actions"],
+      "commitMessageTopic": "{{depName}}"
+    },
+    {
+      "matchDepTypes": ["packageManager"],
+      "commitMessageExtra": "from {{{currentVersion}}} to {{{newValue}}}"
+    }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": ["(^|/)\\.npmrc$"],
+      "matchStrings": ["use-node-version=(?<currentValue>.*?)\\n"],
+      "depNameTemplate": "node",
+      "datasourceTemplate": "node-version"
+    }
+  ]
 }
