@@ -18,8 +18,43 @@ future. This action allows you to easily delete such caches.
 
 ## Usage
 
+Souji-action can be used either as a reusable workflow or as an action.
+
 `actions:write` permission is
-[required to delete caches](https://docs.github.com/en/rest/actions/cache?apiVersion=2022-11-28#delete-a-github-actions-cache-for-a-repository-using-a-cache-id).
+[required to delete caches](https://docs.github.com/en/rest/actions/cache?apiVersion=2022-11-28#delete-a-github-actions-cache-for-a-repository-using-a-cache-id).\
+`contents:read` permission is required to checkout private repositories.
+
+- Reusable workflow
+
+<!-- x-release-please-start-version -->
+
+```yml
+name: cleanup caches by a branch
+on:
+  pull_request_target:
+    types:
+      - closed
+  delete:
+  workflow_dispatch:
+    inputs:
+      branchNames:
+        description: 'List of branch(ref) names with caches to be deleted'
+        required: false
+        type: string
+
+jobs:
+  cleanup:
+    permissions:
+      actions: write
+      contents: read
+    uses: 4m-mazi/souji-action/.github/workflows/_souji.yml@main
+    with:
+      branch-names: ${{ inputs.branchNames }}
+```
+
+<!-- x-release-please-end -->
+
+- Action
 
 <!-- x-release-please-start-version -->
 
@@ -51,7 +86,7 @@ jobs:
 
 <!-- x-release-please-end -->
 
-This workflow cleans up caches for branches when they are merged(closed) or
+These workflows cleans up caches for branches when they are merged(closed) or
 deleted. \
 This will clear the following cache:
 
