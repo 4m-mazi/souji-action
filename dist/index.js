@@ -29104,7 +29104,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getRef = void 0;
-const v = __importStar(__nccwpck_require__(5719));
+const v = __importStar(__nccwpck_require__(6508));
 const schema_1 = __nccwpck_require__(3731);
 const utils_1 = __nccwpck_require__(1356);
 const getRef = ({ eventName, payload }) => {
@@ -29167,7 +29167,7 @@ exports.getRef = getRef;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NullableStringSchema = exports.OptionalStringSchema = exports.StringSchema = void 0;
-const valibot_1 = __nccwpck_require__(5719);
+const valibot_1 = __nccwpck_require__(6508);
 exports.StringSchema = (0, valibot_1.string)();
 exports.OptionalStringSchema = (0, valibot_1.optional)((0, valibot_1.string)());
 exports.NullableStringSchema = (0, valibot_1.nullable)((0, valibot_1.string)());
@@ -31018,7 +31018,7 @@ module.exports = parseParams
 
 /***/ }),
 
-/***/ 5719:
+/***/ 6508:
 /***/ ((module) => {
 
 "use strict";
@@ -31069,12 +31069,13 @@ __export(src_exports, {
   UUID_REGEX: () => UUID_REGEX,
   ValiError: () => ValiError,
   _addIssue: () => _addIssue,
-  _isAllowedObjectKey: () => _isAllowedObjectKey,
   _isLuhnAlgo: () => _isLuhnAlgo,
+  _isValidObjectKey: () => _isValidObjectKey,
   _stringify: () => _stringify,
   any: () => any,
   array: () => array,
   arrayAsync: () => arrayAsync,
+  awaitAsync: () => awaitAsync,
   bic: () => bic,
   bigint: () => bigint,
   blob: () => blob,
@@ -31083,6 +31084,7 @@ __export(src_exports, {
   bytes: () => bytes,
   check: () => check,
   checkAsync: () => checkAsync,
+  checkItems: () => checkItems,
   config: () => config,
   creditCard: () => creditCard,
   cuid2: () => cuid2,
@@ -31099,15 +31101,21 @@ __export(src_exports, {
   empty: () => empty,
   endsWith: () => endsWith,
   entriesFromList: () => entriesFromList,
+  enum: () => enum_,
   enum_: () => enum_,
-  every: () => every,
+  everyItem: () => everyItem,
   excludes: () => excludes,
   fallback: () => fallback,
   fallbackAsync: () => fallbackAsync,
+  file: () => file,
+  filterItems: () => filterItems,
+  findItem: () => findItem,
   finite: () => finite,
   flatten: () => flatten,
   forward: () => forward,
   forwardAsync: () => forwardAsync,
+  function: () => function_,
+  function_: () => function_,
   getDefault: () => getDefault,
   getDefaults: () => getDefaults,
   getDefaultsAsync: () => getDefaultsAsync,
@@ -31155,6 +31163,7 @@ __export(src_exports, {
   mac64: () => mac64,
   map: () => map,
   mapAsync: () => mapAsync,
+  mapItems: () => mapItems,
   maxBytes: () => maxBytes,
   maxLength: () => maxLength,
   maxSize: () => maxSize,
@@ -31178,6 +31187,7 @@ __export(src_exports, {
   notLength: () => notLength,
   notSize: () => notSize,
   notValue: () => notValue,
+  null: () => null_,
   null_: () => null_,
   nullable: () => nullable,
   nullableAsync: () => nullableAsync,
@@ -31198,10 +31208,13 @@ __export(src_exports, {
   parserAsync: () => parserAsync,
   partial: () => partial,
   partialAsync: () => partialAsync,
+  partialCheck: () => partialCheck,
+  partialCheckAsync: () => partialCheckAsync,
   pick: () => pick,
   picklist: () => picklist,
   pipe: () => pipe,
   pipeAsync: () => pipeAsync,
+  promise: () => promise,
   rawCheck: () => rawCheck,
   rawCheckAsync: () => rawCheckAsync,
   rawTransform: () => rawTransform,
@@ -31209,6 +31222,7 @@ __export(src_exports, {
   readonly: () => readonly,
   record: () => record,
   recordAsync: () => recordAsync,
+  reduceItems: () => reduceItems,
   regex: () => regex,
   required: () => required,
   requiredAsync: () => requiredAsync,
@@ -31224,7 +31238,8 @@ __export(src_exports, {
   setSchemaMessage: () => setSchemaMessage,
   setSpecificMessage: () => setSpecificMessage,
   size: () => size,
-  some: () => some,
+  someItem: () => someItem,
+  sortItems: () => sortItems,
   startsWith: () => startsWith,
   strictObject: () => strictObject,
   strictObjectAsync: () => strictObjectAsync,
@@ -31246,6 +31261,7 @@ __export(src_exports, {
   tupleWithRest: () => tupleWithRest,
   tupleWithRestAsync: () => tupleWithRestAsync,
   ulid: () => ulid,
+  undefined: () => undefined_,
   undefined_: () => undefined_,
   union: () => union,
   unionAsync: () => unionAsync,
@@ -31256,9 +31272,24 @@ __export(src_exports, {
   value: () => value,
   variant: () => variant,
   variantAsync: () => variantAsync,
+  void: () => void_,
   void_: () => void_
 });
 module.exports = __toCommonJS(src_exports);
+
+// src/actions/await/awaitAsync.ts
+function awaitAsync() {
+  return {
+    kind: "transformation",
+    type: "await",
+    reference: awaitAsync,
+    async: true,
+    async _run(dataset) {
+      dataset.value = await dataset.value;
+      return dataset;
+    }
+  };
+}
 
 // src/regex.ts
 var BIC_REGEX = /^[A-Z]{6}(?!00)[A-Z\d]{2}(?:[A-Z\d]{3})?$/u;
@@ -31351,11 +31382,17 @@ function deleteSpecificMessage(reference, lang) {
 
 // src/utils/_stringify/_stringify.ts
 function _stringify(input) {
-  let type = typeof input;
-  if (type === "object") {
-    type = (input && Object.getPrototypeOf(input)?.constructor?.name) ?? "null";
+  const type = typeof input;
+  if (type === "string") {
+    return `"${input}"`;
   }
-  return type === "string" ? `"${input}"` : type === "number" || type === "bigint" || type === "boolean" ? `${input}` : type;
+  if (type === "number" || type === "bigint" || type === "boolean") {
+    return `${input}`;
+  }
+  if (type === "object" || type === "function") {
+    return (input && Object.getPrototypeOf(input)?.constructor?.name) ?? "null";
+  }
+  return type;
 }
 
 // src/utils/_addIssue/_addIssue.ts
@@ -31394,11 +31431,6 @@ function _addIssue(context, label, dataset, config2, other) {
   }
 }
 
-// src/utils/_isAllowedObjectKey/_isAllowedObjectKey.ts
-function _isAllowedObjectKey(key) {
-  return key !== "__proto__" && key !== "prototype" && key !== "constructor";
-}
-
 // src/utils/_isLuhnAlgo/_isLuhnAlgo.ts
 var NON_DIGIT_REGEX = /\D/gu;
 function _isLuhnAlgo(input) {
@@ -31412,6 +31444,11 @@ function _isLuhnAlgo(input) {
     sum += bit ? [0, 2, 4, 6, 8, 1, 3, 5, 7, 9][value2] : value2;
   }
   return sum % 10 === 0;
+}
+
+// src/utils/_isValidObjectKey/_isValidObjectKey.ts
+function _isValidObjectKey(object2, key) {
+  return Object.hasOwn(object2, key) && key !== "__proto__" && key !== "prototype" && key !== "constructor";
 }
 
 // src/utils/entriesFromList/entriesFromList.ts
@@ -31495,6 +31532,20 @@ function bic(message) {
   };
 }
 
+// src/actions/brand/brand.ts
+function brand(name) {
+  return {
+    kind: "transformation",
+    type: "brand",
+    reference: brand,
+    async: false,
+    name,
+    _run(dataset) {
+      return dataset;
+    }
+  };
+}
+
 // src/actions/bytes/bytes.ts
 function bytes(requirement, message) {
   return {
@@ -31514,20 +31565,6 @@ function bytes(requirement, message) {
           });
         }
       }
-      return dataset;
-    }
-  };
-}
-
-// src/actions/brand/brand.ts
-function brand(name) {
-  return {
-    kind: "transformation",
-    type: "brand",
-    reference: brand,
-    async: false,
-    name,
-    _run(dataset) {
       return dataset;
     }
   };
@@ -31565,6 +31602,41 @@ function checkAsync(requirement, message) {
     async _run(dataset, config2) {
       if (dataset.typed && !await this.requirement(dataset.value)) {
         _addIssue(this, "input", dataset, config2);
+      }
+      return dataset;
+    }
+  };
+}
+
+// src/actions/checkItems/checkItems.ts
+function checkItems(requirement, message) {
+  return {
+    kind: "validation",
+    type: "check_items",
+    reference: checkItems,
+    async: false,
+    expects: null,
+    requirement,
+    message,
+    _run(dataset, config2) {
+      if (dataset.typed) {
+        for (let index = 0; index < dataset.value.length; index++) {
+          const item = dataset.value[index];
+          if (!this.requirement(item, index, dataset.value)) {
+            _addIssue(this, "item", dataset, config2, {
+              input: item,
+              path: [
+                {
+                  type: "array",
+                  origin: "value",
+                  input: dataset.value,
+                  key: index,
+                  value: item
+                }
+              ]
+            });
+          }
+        }
       }
       return dataset;
     }
@@ -31731,19 +31803,19 @@ function endsWith(requirement, message) {
   };
 }
 
-// src/actions/every/every.ts
-function every(requirement, message) {
+// src/actions/everyItem/everyItem.ts
+function everyItem(requirement, message) {
   return {
     kind: "validation",
-    type: "every",
-    reference: every,
+    type: "every_item",
+    reference: everyItem,
     async: false,
     expects: null,
     requirement,
     message,
     _run(dataset, config2) {
       if (dataset.typed && !dataset.value.every(this.requirement)) {
-        _addIssue(this, "content", dataset, config2);
+        _addIssue(this, "item", dataset, config2);
       }
       return dataset;
     }
@@ -31765,6 +31837,36 @@ function excludes(requirement, message) {
       if (dataset.typed && dataset.value.includes(this.requirement)) {
         _addIssue(this, "content", dataset, config2, { received });
       }
+      return dataset;
+    }
+  };
+}
+
+// src/actions/filterItems/filterItems.ts
+function filterItems(operation) {
+  return {
+    kind: "transformation",
+    type: "filter_items",
+    reference: filterItems,
+    async: false,
+    operation,
+    _run(dataset) {
+      dataset.value = dataset.value.filter(this.operation);
+      return dataset;
+    }
+  };
+}
+
+// src/actions/findItem/findItem.ts
+function findItem(operation) {
+  return {
+    kind: "transformation",
+    type: "find_item",
+    reference: findItem,
+    async: false,
+    operation,
+    _run(dataset) {
+      dataset.value = dataset.value.find(this.operation);
       return dataset;
     }
   };
@@ -32176,6 +32278,21 @@ function mac64(message) {
   };
 }
 
+// src/actions/mapItems/mapItems.ts
+function mapItems(operation) {
+  return {
+    kind: "transformation",
+    type: "map_items",
+    reference: mapItems,
+    async: false,
+    operation,
+    _run(dataset) {
+      dataset.value = dataset.value.map(this.operation);
+      return dataset;
+    }
+  };
+}
+
 // src/actions/maxBytes/maxBytes.ts
 function maxBytes(requirement, message) {
   return {
@@ -32516,6 +32633,68 @@ function octal(message) {
   };
 }
 
+// src/actions/partialCheck/utils/_isPartiallyTyped/_isPartiallyTyped.ts
+function _isPartiallyTyped(dataset, pathList) {
+  if (dataset.issues) {
+    for (const path of pathList) {
+      for (const issue of dataset.issues) {
+        let typed = false;
+        const bound = Math.min(path.length, issue.path?.length ?? 0);
+        for (let index = 0; index < bound; index++) {
+          if (path[index] !== issue.path[index].key) {
+            typed = true;
+            break;
+          }
+        }
+        if (!typed) {
+          return false;
+        }
+      }
+    }
+  }
+  return true;
+}
+
+// src/actions/partialCheck/partialCheck.ts
+function partialCheck(pathList, requirement, message) {
+  return {
+    kind: "validation",
+    type: "partial_check",
+    reference: partialCheck,
+    async: false,
+    expects: null,
+    requirement,
+    message,
+    _run(dataset, config2) {
+      if (_isPartiallyTyped(dataset, pathList) && // @ts-expect-error
+      !this.requirement(dataset.value)) {
+        _addIssue(this, "input", dataset, config2);
+      }
+      return dataset;
+    }
+  };
+}
+
+// src/actions/partialCheck/partialCheckAsync.ts
+function partialCheckAsync(pathList, requirement, message) {
+  return {
+    kind: "validation",
+    type: "partial_check",
+    reference: partialCheckAsync,
+    async: true,
+    expects: null,
+    requirement,
+    message,
+    async _run(dataset, config2) {
+      if (_isPartiallyTyped(dataset, pathList) && // @ts-expect-error
+      !await this.requirement(dataset.value)) {
+        _addIssue(this, "input", dataset, config2);
+      }
+      return dataset;
+    }
+  };
+}
+
 // src/actions/rawCheck/rawCheck.ts
 function rawCheck(action) {
   return {
@@ -32615,6 +32794,22 @@ function readonly() {
   };
 }
 
+// src/actions/reduceItems/reduceItems.ts
+function reduceItems(operation, initial) {
+  return {
+    kind: "transformation",
+    type: "reduce_items",
+    reference: reduceItems,
+    async: false,
+    operation,
+    initial,
+    _run(dataset) {
+      dataset.value = dataset.value.reduce(this.operation, this.initial);
+      return dataset;
+    }
+  };
+}
+
 // src/actions/regex/regex.ts
 function regex(requirement, message) {
   return {
@@ -32674,20 +32869,35 @@ function size(requirement, message) {
   };
 }
 
-// src/actions/some/some.ts
-function some(requirement, message) {
+// src/actions/someItem/someItem.ts
+function someItem(requirement, message) {
   return {
     kind: "validation",
-    type: "some",
-    reference: some,
+    type: "some_item",
+    reference: someItem,
     async: false,
     expects: null,
     requirement,
     message,
     _run(dataset, config2) {
       if (dataset.typed && !dataset.value.some(this.requirement)) {
-        _addIssue(this, "content", dataset, config2);
+        _addIssue(this, "item", dataset, config2);
       }
+      return dataset;
+    }
+  };
+}
+
+// src/actions/sortItems/sortItems.ts
+function sortItems(operation) {
+  return {
+    kind: "transformation",
+    type: "sort_items",
+    reference: sortItems,
+    async: false,
+    operation,
+    _run(dataset) {
+      dataset.value = dataset.value.sort(this.operation);
       return dataset;
     }
   };
@@ -32773,30 +32983,30 @@ function toUpperCase() {
 }
 
 // src/actions/transform/transform.ts
-function transform(action) {
+function transform(operation) {
   return {
     kind: "transformation",
     type: "transform",
     reference: transform,
     async: false,
-    action,
+    operation,
     _run(dataset) {
-      dataset.value = action(dataset.value);
+      dataset.value = this.operation(dataset.value);
       return dataset;
     }
   };
 }
 
 // src/actions/transform/transformAsync.ts
-function transformAsync(action) {
+function transformAsync(operation) {
   return {
     kind: "transformation",
     type: "transform",
     reference: transformAsync,
     async: true,
-    action,
+    operation,
     async _run(dataset) {
-      dataset.value = await action(dataset.value);
+      dataset.value = await this.operation(dataset.value);
       return dataset;
     }
   };
@@ -33409,8 +33619,14 @@ function date(message) {
     async: false,
     message,
     _run(dataset, config2) {
-      if (dataset.value instanceof Date && !isNaN(dataset.value.getTime())) {
-        dataset.typed = true;
+      if (dataset.value instanceof Date) {
+        if (!isNaN(dataset.value)) {
+          dataset.typed = true;
+        } else {
+          _addIssue(this, "type", dataset, config2, {
+            received: '"Invalid Date"'
+          });
+        }
       } else {
         _addIssue(this, "type", dataset, config2);
       }
@@ -33433,6 +33649,46 @@ function enum_(enum__, message) {
     message,
     _run(dataset, config2) {
       if (this.options.includes(dataset.value)) {
+        dataset.typed = true;
+      } else {
+        _addIssue(this, "type", dataset, config2);
+      }
+      return dataset;
+    }
+  };
+}
+
+// src/schemas/file/file.ts
+function file(message) {
+  return {
+    kind: "schema",
+    type: "file",
+    reference: file,
+    expects: "File",
+    async: false,
+    message,
+    _run(dataset, config2) {
+      if (dataset.value instanceof File) {
+        dataset.typed = true;
+      } else {
+        _addIssue(this, "type", dataset, config2);
+      }
+      return dataset;
+    }
+  };
+}
+
+// src/schemas/function/function.ts
+function function_(message) {
+  return {
+    kind: "schema",
+    type: "function",
+    reference: function_,
+    expects: "Function",
+    async: false,
+    message,
+    _run(dataset, config2) {
+      if (typeof dataset.value === "function") {
         dataset.typed = true;
       } else {
         _addIssue(this, "type", dataset, config2);
@@ -33731,7 +33987,7 @@ function looseObject(entries, message) {
         }
         if (!dataset.issues || !config2.abortEarly) {
           for (const key in input) {
-            if (_isAllowedObjectKey(key) && !(key in this.entries)) {
+            if (_isValidObjectKey(input, key) && !(key in this.entries)) {
               dataset.value[key] = input[key];
             }
           }
@@ -33803,7 +34059,7 @@ function looseObjectAsync(entries, message) {
         }
         if (!dataset.issues || !config2.abortEarly) {
           for (const key in input) {
-            if (_isAllowedObjectKey(key) && !(key in this.entries)) {
+            if (_isValidObjectKey(input, key) && !(key in this.entries)) {
               dataset.value[key] = input[key];
             }
           }
@@ -33839,7 +34095,7 @@ function looseTuple(items, message) {
           );
           if (itemDataset.issues) {
             const pathItem = {
-              type: "tuple",
+              type: "array",
               origin: "value",
               input,
               key,
@@ -33907,7 +34163,7 @@ function looseTupleAsync(items, message) {
         for (const [key, value2, itemDataset] of itemDatasets) {
           if (itemDataset.issues) {
             const pathItem = {
-              type: "tuple",
+              type: "array",
               origin: "value",
               input,
               key,
@@ -34630,7 +34886,7 @@ function objectWithRest(entries, rest, message) {
         }
         if (!dataset.issues || !config2.abortEarly) {
           for (const key in input) {
-            if (_isAllowedObjectKey(key) && !(key in this.entries)) {
+            if (_isValidObjectKey(input, key) && !(key in this.entries)) {
               const value2 = input[key];
               const valueDataset = this.rest._run(
                 { typed: false, value: value2 },
@@ -34706,7 +34962,7 @@ function objectWithRestAsync(entries, rest, message) {
           // Parse other entries with rest schema
           Promise.all(
             Object.entries(input).filter(
-              ([key]) => _isAllowedObjectKey(key) && !(key in this.entries)
+              ([key]) => _isValidObjectKey(input, key) && !(key in this.entries)
             ).map(
               async ([key, value2]) => [
                 key,
@@ -34873,6 +35129,26 @@ function picklist(options, message) {
   };
 }
 
+// src/schemas/promise/promise.ts
+function promise(message) {
+  return {
+    kind: "schema",
+    type: "promise",
+    reference: promise,
+    expects: "Promise",
+    async: false,
+    message,
+    _run(dataset, config2) {
+      if (dataset.value instanceof Promise) {
+        dataset.typed = true;
+      } else {
+        _addIssue(this, "type", dataset, config2);
+      }
+      return dataset;
+    }
+  };
+}
+
 // src/schemas/record/record.ts
 function record(key, value2, message) {
   return {
@@ -34890,7 +35166,7 @@ function record(key, value2, message) {
         dataset.typed = true;
         dataset.value = {};
         for (const entryKey in input) {
-          if (_isAllowedObjectKey(entryKey)) {
+          if (_isValidObjectKey(input, entryKey)) {
             const entryValue = input[entryKey];
             const keyDataset = this.key._run(
               { typed: false, value: entryKey },
@@ -34898,7 +35174,7 @@ function record(key, value2, message) {
             );
             if (keyDataset.issues) {
               const pathItem = {
-                type: "record",
+                type: "object",
                 origin: "key",
                 input,
                 key: entryKey,
@@ -34922,7 +35198,7 @@ function record(key, value2, message) {
             );
             if (valueDataset.issues) {
               const pathItem = {
-                type: "record",
+                type: "object",
                 origin: "value",
                 input,
                 key: entryKey,
@@ -34977,7 +35253,7 @@ function recordAsync(key, value2, message) {
         dataset.typed = true;
         dataset.value = {};
         const datasets = await Promise.all(
-          Object.entries(input).filter(([key2]) => _isAllowedObjectKey(key2)).map(
+          Object.entries(input).filter(([key2]) => _isValidObjectKey(input, key2)).map(
             ([entryKey, entryValue]) => Promise.all([
               entryKey,
               entryValue,
@@ -34994,7 +35270,7 @@ function recordAsync(key, value2, message) {
         ] of datasets) {
           if (keyDataset.issues) {
             const pathItem = {
-              type: "record",
+              type: "object",
               origin: "key",
               input,
               key: entryKey,
@@ -35014,7 +35290,7 @@ function recordAsync(key, value2, message) {
           }
           if (valueDataset.issues) {
             const pathItem = {
-              type: "record",
+              type: "object",
               origin: "value",
               input,
               key: entryKey,
@@ -35360,7 +35636,7 @@ function strictTuple(items, message) {
           );
           if (itemDataset.issues) {
             const pathItem = {
-              type: "tuple",
+              type: "array",
               origin: "value",
               input,
               key,
@@ -35394,7 +35670,7 @@ function strictTuple(items, message) {
             expected: "never",
             path: [
               {
-                type: "tuple",
+                type: "array",
                 origin: "value",
                 input,
                 key: this.items.length,
@@ -35439,7 +35715,7 @@ function strictTupleAsync(items, message) {
         for (const [key, value2, itemDataset] of itemDatasets) {
           if (itemDataset.issues) {
             const pathItem = {
-              type: "tuple",
+              type: "array",
               origin: "value",
               input,
               key,
@@ -35473,7 +35749,7 @@ function strictTupleAsync(items, message) {
             expected: "never",
             path: [
               {
-                type: "tuple",
+                type: "array",
                 origin: "value",
                 input,
                 key: this.items.length,
@@ -35553,7 +35829,7 @@ function tuple(items, message) {
           );
           if (itemDataset.issues) {
             const pathItem = {
-              type: "tuple",
+              type: "array",
               origin: "value",
               input,
               key,
@@ -35616,7 +35892,7 @@ function tupleAsync(items, message) {
         for (const [key, value2, itemDataset] of itemDatasets) {
           if (itemDataset.issues) {
             const pathItem = {
-              type: "tuple",
+              type: "array",
               origin: "value",
               input,
               key,
@@ -35675,7 +35951,7 @@ function tupleWithRest(items, rest, message) {
           );
           if (itemDataset.issues) {
             const pathItem = {
-              type: "tuple",
+              type: "array",
               origin: "value",
               input,
               key,
@@ -35708,7 +35984,7 @@ function tupleWithRest(items, rest, message) {
             const itemDataset = this.rest._run({ typed: false, value: value2 }, config2);
             if (itemDataset.issues) {
               const pathItem = {
-                type: "tuple",
+                type: "array",
                 origin: "value",
                 input,
                 key,
@@ -35786,7 +36062,7 @@ function tupleWithRestAsync(items, rest, message) {
         for (const [key, value2, itemDataset] of normalDatasets) {
           if (itemDataset.issues) {
             const pathItem = {
-              type: "tuple",
+              type: "array",
               origin: "value",
               input,
               key,
@@ -35817,7 +36093,7 @@ function tupleWithRestAsync(items, rest, message) {
           for (const [key, value2, itemDataset] of restDatasets) {
             if (itemDataset.issues) {
               const pathItem = {
-                type: "tuple",
+                type: "array",
                 origin: "value",
                 input,
                 key,

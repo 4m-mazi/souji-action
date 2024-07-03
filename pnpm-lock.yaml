@@ -12,8 +12,8 @@ dependencies:
     specifier: 6.0.0
     version: 6.0.0
   valibot:
-    specifier: 0.32.0
-    version: 0.32.0
+    specifier: 0.35.0
+    version: 0.35.0
 
 devDependencies:
   '@octokit/openapi-types':
@@ -4395,8 +4395,8 @@ packages:
       convert-source-map: 1.9.0
     dev: true
 
-  /valibot@0.32.0:
-    resolution: {integrity: sha512-FXBnJl4bNOmeg7lQv+jfvo/wADsRBN8e9C3r+O77Re3dEnDma8opp7p4hcIbF7XJJ30h/5SVohdjer17/sHOsQ==}
+  /valibot@0.35.0:
+    resolution: {integrity: sha512-+i2aCRkReTrd5KBN/dW2BrPOvFnU5LXTV2xjZnjnqUIO8YUx6P2+MgRrkwF2FhkexgyKq/NIZdPdknhHf5A/Ww==}
     dev: false
 
   /vue-eslint-parser@9.4.1(eslint@8.57.0):
