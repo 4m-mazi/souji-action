@@ -1,4 +1,4 @@
-# Souji Action 🧹
+# Souji Action 🧹 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/4m-mazi/souji-action/badge)](https://scorecard.dev/viewer/?uri=github.com/4m-mazi/souji-action)
 
 [![GitHub Super-Linter](https://github.com/4m-mazi/souji-action/actions/workflows/linter.yml/badge.svg)](https://github.com/super-linter/super-linter)
 ![CI](https://github.com/4m-mazi/souji-action/actions/workflows/ci.yml/badge.svg)
