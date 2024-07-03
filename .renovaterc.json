@@ -44,7 +44,8 @@
         "commands": [
           "pnpm install --frozen-lockfile --ignore-scripts",
           "pnpm run build"
-        ]
+        ],
+        "executionMode": "branch"
       }
     },
     {
