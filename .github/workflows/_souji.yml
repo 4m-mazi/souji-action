@@ -57,7 +57,7 @@ jobs:
 
       - id: get-ref
         name: 'Get ref of souji-workflow'
-        uses: docker://mikefarah/yq:4.44.1-githubaction@sha256:ecec8897cfc63329efa97179e4ddc5b2b571ab19dce13c98988fbca5fc778127
+        uses: docker://mikefarah/yq:4.44.2-githubaction@sha256:a935c729d51c78309511a8f18785fc561b9c48b5e63497e0bb888a7de8913641
         with:
           args: |-
             "${{ steps.escape.outputs.result }}"
