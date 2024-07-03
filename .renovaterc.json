@@ -43,7 +43,7 @@
       "postUpgradeTasks": {
         "commands": [
           "pnpm install --frozen-lockfile --ignore-scripts",
-          "pnpm run build"
+          "pnpm run bundle"
         ],
         "executionMode": "branch"
       }
