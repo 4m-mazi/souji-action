@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Generate a token
         id: generate_token
-        uses: actions/create-github-app-token@ad38cffc07bac6e3857755914c4c88bfd2db4da4 # v1.10.2
+        uses: actions/create-github-app-token@31c86eb3b33c9b601a1f60f98dcbfd1d70f379b4 # v1.10.3
         with:
           app-id: ${{ secrets.MAZI_RELEASE_APP_ID }}
           private-key: ${{ secrets.MAZI_RELEASE_APP_PRIVATE_KEY }}
@@ -41,7 +41,7 @@ jobs:
       contents: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+      - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
         with:
           sparse-checkout: ''
           sparse-checkout-cone-mode: false
