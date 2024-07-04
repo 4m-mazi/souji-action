@@ -55,7 +55,10 @@
     },
     {
       "matchDepTypes": ["packageManager"],
-      "commitMessageExtra": "from {{{currentVersion}}} to {{{newValue}}}"
+      "commitMessageExtra": "from {{{currentVersion}}} to {{{newValue}}}",
+      "postUpgradeTasks": {
+        "commands": ["corepack use '{{{depName}}}@{{{newVersion}}}'"]
+      }
     }
   ],
   "customManagers": [
