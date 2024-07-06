@@ -29386,7 +29386,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getRef = void 0;
-const v = __importStar(__nccwpck_require__(6508));
+const v = __importStar(__nccwpck_require__(9099));
 const schema_1 = __nccwpck_require__(3731);
 const utils_1 = __nccwpck_require__(1356);
 const getRef = ({ eventName, payload }) => {
@@ -29449,7 +29449,7 @@ exports.getRef = getRef;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NullableStringSchema = exports.OptionalStringSchema = exports.StringSchema = void 0;
-const valibot_1 = __nccwpck_require__(6508);
+const valibot_1 = __nccwpck_require__(9099);
 exports.StringSchema = (0, valibot_1.string)();
 exports.OptionalStringSchema = (0, valibot_1.optional)((0, valibot_1.string)());
 exports.NullableStringSchema = (0, valibot_1.nullable)((0, valibot_1.string)());
@@ -31306,7 +31306,7 @@ module.exports = parseParams
 
 /***/ }),
 
-/***/ 6508:
+/***/ 9099:
 /***/ ((module) => {
 
 "use strict";
@@ -31471,6 +31471,7 @@ __export(src_exports, {
   nonNullishAsync: () => nonNullishAsync,
   nonOptional: () => nonOptional,
   nonOptionalAsync: () => nonOptionalAsync,
+  normalize: () => normalize,
   notBytes: () => notBytes,
   notLength: () => notLength,
   notSize: () => notSize,
@@ -31627,8 +31628,7 @@ function deleteGlobalConfig() {
 // src/storages/globalMessage/globalMessage.ts
 var store2;
 function setGlobalMessage(message, lang) {
-  if (!store2)
-    store2 = /* @__PURE__ */ new Map();
+  if (!store2) store2 = /* @__PURE__ */ new Map();
   store2.set(lang, message);
 }
 function getGlobalMessage(lang) {
@@ -31641,8 +31641,7 @@ function deleteGlobalMessage(lang) {
 // src/storages/schemaMessage/schemaMessage.ts
 var store3;
 function setSchemaMessage(message, lang) {
-  if (!store3)
-    store3 = /* @__PURE__ */ new Map();
+  if (!store3) store3 = /* @__PURE__ */ new Map();
   store3.set(lang, message);
 }
 function getSchemaMessage(lang) {
@@ -31655,10 +31654,8 @@ function deleteSchemaMessage(lang) {
 // src/storages/specificMessage/specificMessage.ts
 var store4;
 function setSpecificMessage(reference, message, lang) {
-  if (!store4)
-    store4 = /* @__PURE__ */ new Map();
-  if (!store4.get(reference))
-    store4.set(reference, /* @__PURE__ */ new Map());
+  if (!store4) store4 = /* @__PURE__ */ new Map();
+  if (!store4.get(reference)) store4.set(reference, /* @__PURE__ */ new Map());
   store4.get(reference).set(lang, message);
 }
 function getSpecificMessage(reference, lang) {
@@ -31753,7 +31750,7 @@ function getDotPath(issue) {
   if (issue.path) {
     let key = "";
     for (const item of issue.path) {
-      if ("key" in item && (typeof item.key === "string" || typeof item.key === "number")) {
+      if (typeof item.key === "string" || typeof item.key === "number") {
         if (key) {
           key += `.${item.key}`;
         } else {
@@ -32810,6 +32807,21 @@ function nonEmpty(message) {
           received: "0"
         });
       }
+      return dataset;
+    }
+  };
+}
+
+// src/actions/normalize/normalize.ts
+function normalize(form) {
+  return {
+    kind: "transformation",
+    type: "normalize",
+    reference: normalize,
+    async: false,
+    form,
+    _run(dataset) {
+      dataset.value = dataset.value.normalize(this.form);
       return dataset;
     }
   };
@@ -35640,6 +35652,7 @@ function set(value2, message) {
               type: "set",
               origin: "value",
               input,
+              key: null,
               value: inputValue
             };
             for (const issue of valueDataset.issues) {
@@ -35703,6 +35716,7 @@ function setAsync(value2, message) {
               type: "set",
               origin: "value",
               input,
+              key: null,
               value: inputValue
             };
             for (const issue of valueDataset.issues) {
