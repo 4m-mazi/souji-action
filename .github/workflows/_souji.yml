@@ -1,0 +1,77 @@
+on:
+  workflow_call:
+    inputs:
+      branch-names:
+        description:
+          'List of branch(ref) names with caches to be deleted (e.g., `main
+          refs/pull/123/merge refs/tags/1.0.0`)'
+        required: false
+        type: string
+      dry-run:
+        description: 'If `true`, dry-run caches deletion.'
+        default: false
+        required: false
+        type: boolean
+    secrets:
+      repo-token:
+        description: 'The GitHub token used to manage repository action cache'
+        required: false
+
+permissions: {}
+
+env:
+  HERE: '4m-mazi/souji-action/.github/workflows/_souji.yml'
+
+jobs:
+  souji:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - id: get-path
+        name: 'Get path of caller workflow'
+        env:
+          WORKFLOW_REF: ${{ github.workflow_ref }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          result=$(sed -e "s|^$REPOSITORY/||" -e 's|@refs/.*||' <<< "$WORKFLOW_REF")
+          echo "result=$result" >> "$GITHUB_OUTPUT"
+
+      - name: 'Checkout caller workflow'
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          sparse-checkout: |
+            ${{ steps.get-path.outputs.result }}
+          sparse-checkout-cone-mode: false
+
+      - id: escape
+        name: 'Escape yq command'
+        run: |
+          result=$(
+          sed -e 's/"/\\"/g' << 'EOF'
+          yq '[.jobs.*.uses | select(tag == "!!str" and test("^${{ env.HERE }}@"))][0] | sub("^${{ env.HERE }}@", "")' ${{ steps.get-path.outputs.result }}
+          EOF
+          )
+          echo "result=$result" >> "$GITHUB_OUTPUT"
+
+      - id: get-ref
+        name: 'Get ref of souji-workflow'
+        uses: docker://mikefarah/yq:4.44.2-githubaction@sha256:a935c729d51c78309511a8f18785fc561b9c48b5e63497e0bb888a7de8913641
+        with:
+          args: |-
+            "${{ steps.escape.outputs.result }}"
+
+      - name: 'Checkout souji-action'
+        uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332 # v4.1.7
+        with:
+          repository: 4m-mazi/souji-action
+          ref: ${{ steps.get-ref.outputs.result }}
+          path: 'souji-action'
+
+      - name: 'Run souji-action'
+        uses: ./souji-action/
+        with:
+          repo-token: ${{ secrets.repo-token || github.token }}
+          branch-names: ${{ inputs.branch-names }}
+          dry-run: ${{ inputs.dry-run }}
