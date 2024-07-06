@@ -18,7 +18,7 @@
   "assigneesFromCodeOwners": true,
   "commitBodyTable": true,
   "commitMessageAction": "bump",
-  "commitMessageExtra": "from {{#if currentValue}}{{{currentValue}}}{{else}}{{{currentDigestShort}}}{{/if}} to {{#if isPinDigest}}{{{newDigestShort}}}{{else}}{{#if isSingleVersion}}{{prettyNewVersion}}{{else}}{{#if newValue}}{{{newValue}}}{{else}}{{{newDigestShort}}}{{/if}}{{/if}}{{/if}}",
+  "commitMessageExtra": "from {{#if currentValue}}{{{replace '^v' '' currentValue}}}{{else}}{{{currentDigestShort}}}{{/if}} to {{#if isPinDigest}}{{{newDigestShort}}}{{else}}{{#if isSingleVersion}}{{replace '^v' '' newVersion}}{{else}}{{#if newValue}}{{{newValue}}}{{else}}{{{newDigestShort}}}{{/if}}{{/if}}{{/if}}",
   "commitMessageTopic": "{{depName}}",
   "prConcurrentLimit": 3,
   "packageRules": [
@@ -55,7 +55,7 @@
     },
     {
       "matchDepTypes": ["packageManager"],
-      "commitMessageExtra": "from {{{currentVersion}}} to {{{newValue}}}",
+      "commitMessageExtra": "from {{{currentVersion}}} to {{{newVersion}}}",
       "postUpgradeTasks": {
         "commands": ["corepack use '{{{depName}}}@{{{newVersion}}}'"]
       }
