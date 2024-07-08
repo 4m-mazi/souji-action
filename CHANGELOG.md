@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.4.0](https://github.com/4m-mazi/souji-action/compare/v1.3.1...v1.4.0) (2024-07-08)
+
+
+### Features
+
+* add reusable workflow ([#92](https://github.com/4m-mazi/souji-action/issues/92)) ([5aa9096](https://github.com/4m-mazi/souji-action/commit/5aa90962c07b2c76ecb57e9ca6e5672ac0d44370))
+
+
+### Dependencies
+
+* bump valibot from 0.35.0 to 0.36.0 ([#126](https://github.com/4m-mazi/souji-action/issues/126)) ([8ac7b8c](https://github.com/4m-mazi/souji-action/commit/8ac7b8c26c1e408ba2e1bea8be5b51ca0643b8ef))
+
 ## [1.3.1](https://github.com/4m-mazi/souji-action/compare/v1.3.0...v1.3.1) (2024-07-05)
 
 
