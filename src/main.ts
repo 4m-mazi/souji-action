@@ -73,9 +73,7 @@ export async function run(): Promise<void> {
           )
         : branchNames
             .map(branchName => convertRef(branchName, { refType: 'branch' }))
-            // .filter(Boolean) // この時代のfilterの型定義って終わってたのか…
-            // HACK
-            .flatMap(x => (x ? x : []))
+            .filter(ref => ref !== null)
 
     for (const ref of refs) {
       await deleteRefActionsCaches(octokit, repo, ref, isDryRun)

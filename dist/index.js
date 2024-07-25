@@ -29336,9 +29336,7 @@ async function run() {
             ? [(0, ref_1.getRef)({ eventName, payload })].flatMap(x => x ? x : infoNull(eventName))
             : branchNames
                 .map(branchName => (0, utils_1.convertRef)(branchName, { refType: 'branch' }))
-                // .filter(Boolean) // この時代のfilterの型定義って終わってたのか…
-                // HACK
-                .flatMap(x => (x ? x : []));
+                .filter(ref => ref !== null);
         for (const ref of refs) {
             await deleteRefActionsCaches(octokit, repo, ref, isDryRun);
         }
