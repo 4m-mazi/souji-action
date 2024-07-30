@@ -29384,7 +29384,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getRef = void 0;
-const v = __importStar(__nccwpck_require__(9099));
+const v = __importStar(__nccwpck_require__(9986));
 const schema_1 = __nccwpck_require__(3731);
 const utils_1 = __nccwpck_require__(1356);
 const getRef = ({ eventName, payload }) => {
@@ -29447,7 +29447,7 @@ exports.getRef = getRef;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NullableStringSchema = exports.OptionalStringSchema = exports.StringSchema = void 0;
-const valibot_1 = __nccwpck_require__(9099);
+const valibot_1 = __nccwpck_require__(9986);
 exports.StringSchema = (0, valibot_1.string)();
 exports.OptionalStringSchema = (0, valibot_1.optional)((0, valibot_1.string)());
 exports.NullableStringSchema = (0, valibot_1.nullable)((0, valibot_1.string)());
@@ -31304,7 +31304,7 @@ module.exports = parseParams
 
 /***/ }),
 
-/***/ 9099:
+/***/ 9986:
 /***/ ((module) => {
 
 "use strict";
@@ -31330,6 +31330,7 @@ var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: tru
 // src/index.ts
 var src_exports = {};
 __export(src_exports, {
+  BASE64_REGEX: () => BASE64_REGEX,
   BIC_REGEX: () => BIC_REGEX,
   CUID2_REGEX: () => CUID2_REGEX,
   DECIMAL_REGEX: () => DECIMAL_REGEX,
@@ -31362,6 +31363,7 @@ __export(src_exports, {
   array: () => array,
   arrayAsync: () => arrayAsync,
   awaitAsync: () => awaitAsync,
+  base64: () => base64,
   bic: () => bic,
   bigint: () => bigint,
   blob: () => blob,
@@ -31382,6 +31384,7 @@ __export(src_exports, {
   deleteGlobalMessage: () => deleteGlobalMessage,
   deleteSchemaMessage: () => deleteSchemaMessage,
   deleteSpecificMessage: () => deleteSpecificMessage,
+  description: () => description,
   email: () => email,
   emoji: () => emoji,
   empty: () => empty,
@@ -31579,12 +31582,16 @@ function awaitAsync() {
 }
 
 // src/regex.ts
-var BIC_REGEX = /^[A-Z]{6}(?!00)[A-Z\d]{2}(?:[A-Z\d]{3})?$/u;
+var BASE64_REGEX = /^(?:[\da-z+/]{4})*(?:[\da-z+/]{2}==|[\da-z+/]{3}=)?$/iu;
+var BIC_REGEX = /^[A-Z]{6}(?!00)[\dA-Z]{2}(?:[\dA-Z]{3})?$/u;
 var CUID2_REGEX = /^[a-z][\da-z]*$/u;
 var DECIMAL_REGEX = /^\d+$/u;
 var EMAIL_REGEX = /^[\w+-]+(?:\.[\w+-]+)*@[\da-z]+(?:[.-][\da-z]+)*\.[a-z]{2,}$/iu;
-var EMOJI_REGEX = /^[\p{Extended_Pictographic}\p{Emoji_Component}]+$/u;
-var HEXADECIMAL_REGEX = /^(?:0h|0x)?[\da-f]+$/iu;
+var EMOJI_REGEX = (
+  // eslint-disable-next-line redos-detector/no-unsafe-regex, regexp/no-dupe-disjunctions -- false positives
+  /^(?:[\u{1F1E6}-\u{1F1FF}]{2}|\u{1F3F4}[\u{E0061}-\u{E007A}]{2}[\u{E0030}-\u{E0039}\u{E0061}-\u{E007A}]{1,3}\u{E007F}|(?:\p{Emoji}\uFE0F\u20E3?|\p{Emoji_Modifier_Base}\p{Emoji_Modifier}?|\p{Emoji_Presentation})(?:\u200D(?:\p{Emoji}\uFE0F\u20E3?|\p{Emoji_Modifier_Base}\p{Emoji_Modifier}?|\p{Emoji_Presentation}))*)+$/u
+);
+var HEXADECIMAL_REGEX = /^(?:0[hx])?[\da-f]+$/iu;
 var HEX_COLOR_REGEX = /^#(?:[\da-f]{3,4}|[\da-f]{6}|[\da-f]{8})$/iu;
 var IMEI_REGEX = /^\d{15}$|^\d{2}-\d{6}-\d{6}-\d$/u;
 var IPV4_REGEX = (
@@ -31796,6 +31803,25 @@ var ValiError = class extends Error {
   }
 };
 
+// src/actions/base64/base64.ts
+function base64(message) {
+  return {
+    kind: "validation",
+    type: "base64",
+    reference: base64,
+    async: false,
+    expects: null,
+    requirement: BASE64_REGEX,
+    message,
+    _run(dataset, config2) {
+      if (dataset.typed && !this.requirement.test(dataset.value)) {
+        _addIssue(this, "Base64", dataset, config2);
+      }
+      return dataset;
+    }
+  };
+}
+
 // src/actions/bic/bic.ts
 function bic(message) {
   return {
@@ -32004,6 +32030,16 @@ function decimal(message) {
       }
       return dataset;
     }
+  };
+}
+
+// src/actions/description/description.ts
+function description(description_) {
+  return {
+    kind: "metadata",
+    type: "description",
+    reference: description,
+    description: description_
   };
 }
 
@@ -33464,8 +33500,8 @@ function fallback(schema, fallback2) {
     ...schema,
     fallback: fallback2,
     _run(dataset, config2) {
-      schema._run(dataset, config2);
-      return dataset.issues ? { typed: true, value: getFallback(this, dataset, config2) } : dataset;
+      const outputDataset = schema._run(dataset, config2);
+      return outputDataset.issues ? { typed: true, value: getFallback(this, outputDataset, config2) } : outputDataset;
     }
   };
 }
@@ -33477,11 +33513,11 @@ function fallbackAsync(schema, fallback2) {
     fallback: fallback2,
     async: true,
     async _run(dataset, config2) {
-      schema._run(dataset, config2);
-      return dataset.issues ? (
+      const outputDataset = await schema._run(dataset, config2);
+      return outputDataset.issues ? (
         // @ts-expect-error
-        { typed: true, value: await getFallback(this, dataset, config2) }
-      ) : dataset;
+        { typed: true, value: await getFallback(this, outputDataset, config2) }
+      ) : outputDataset;
     }
   };
 }
@@ -35247,6 +35283,9 @@ function objectWithRestAsync(entries, rest, message) {
         dataset.value = {};
         const [normalDatasets, restDatasets] = await Promise.all([
           // Parse schema of each normal entry
+          // Hint: We do not distinguish between missing and `undefined` entries.
+          // The reason for this decision is that it reduces the bundle size, and
+          // we also expect that most users will expect this behavior.
           Promise.all(
             Object.entries(this.entries).map(async ([key, schema]) => {
               const value2 = input[key];
@@ -35258,6 +35297,7 @@ function objectWithRestAsync(entries, rest, message) {
             })
           ),
           // Parse other entries with rest schema
+          // Hint: We exclude specific keys for security reasons
           Promise.all(
             Object.entries(input).filter(
               ([key]) => _isValidObjectKey(input, key) && !(key in this.entries)
@@ -36848,13 +36888,15 @@ function pipe(...pipe2) {
     ...pipe2[0],
     pipe: pipe2,
     _run(dataset, config2) {
-      for (let index = 0; index < pipe2.length; index++) {
-        if (dataset.issues && (pipe2[index].kind === "schema" || pipe2[index].kind === "transformation")) {
-          dataset.typed = false;
-          break;
-        }
-        if (!dataset.issues || !config2.abortEarly && !config2.abortPipeEarly) {
-          dataset = pipe2[index]._run(dataset, config2);
+      for (const item of pipe2) {
+        if (item.kind !== "metadata") {
+          if (dataset.issues && (item.kind === "schema" || item.kind === "transformation")) {
+            dataset.typed = false;
+            break;
+          }
+          if (!dataset.issues || !config2.abortEarly && !config2.abortPipeEarly) {
+            dataset = item._run(dataset, config2);
+          }
         }
       }
       return dataset;
@@ -36869,13 +36911,15 @@ function pipeAsync(...pipe2) {
     pipe: pipe2,
     async: true,
     async _run(dataset, config2) {
-      for (let index = 0; index < pipe2.length; index++) {
-        if (dataset.issues && (pipe2[index].kind === "schema" || pipe2[index].kind === "transformation")) {
-          dataset.typed = false;
-          break;
-        }
-        if (!dataset.issues || !config2.abortEarly && !config2.abortPipeEarly) {
-          dataset = await pipe2[index]._run(dataset, config2);
+      for (const item of pipe2) {
+        if (item.kind !== "metadata") {
+          if (dataset.issues && (item.kind === "schema" || item.kind === "transformation")) {
+            dataset.typed = false;
+            break;
+          }
+          if (!dataset.issues || !config2.abortEarly && !config2.abortPipeEarly) {
+            dataset = await item._run(dataset, config2);
+          }
         }
       }
       return dataset;
