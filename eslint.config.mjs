@@ -50,7 +50,6 @@ export default tslint.config(
       'import/no-namespace': 'off',
       'no-console': 'off',
       'no-unused-vars': 'off',
-      'prettier/prettier': 'error',
       semi: 'off',
       '@typescript-eslint/array-type': 'error',
       '@typescript-eslint/await-thenable': 'error',
