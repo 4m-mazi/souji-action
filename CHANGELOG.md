@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.1](https://github.com/4m-mazi/souji-action/compare/v1.4.0...v1.4.1) (2024-08-12)
+
+
+### Dependencies
+
+* bump valibot from 0.36.0 to 0.37.0 ([#163](https://github.com/4m-mazi/souji-action/issues/163)) ([da083b5](https://github.com/4m-mazi/souji-action/commit/da083b50ea92e526b52a2c8ea7edd9535504809a))
+* **workflow:** bump mikefarah/yq to v4.44.3 ([#172](https://github.com/4m-mazi/souji-action/issues/172)) ([c9c390e](https://github.com/4m-mazi/souji-action/commit/c9c390e4aaef5de86a41a9b583b895050159077b))
+
 ## [1.4.0](https://github.com/4m-mazi/souji-action/compare/v1.3.1...v1.4.0) (2024-07-08)
 
 
