@@ -29397,7 +29397,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getRef = void 0;
-const v = __importStar(__nccwpck_require__(9986));
+const v = __importStar(__nccwpck_require__(4216));
 const schema_1 = __nccwpck_require__(3731);
 const utils_1 = __nccwpck_require__(1356);
 const getRef = ({ eventName, payload }) => {
@@ -29460,7 +29460,7 @@ exports.getRef = getRef;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NullableStringSchema = exports.OptionalStringSchema = exports.StringSchema = void 0;
-const valibot_1 = __nccwpck_require__(9986);
+const valibot_1 = __nccwpck_require__(4216);
 exports.StringSchema = (0, valibot_1.string)();
 exports.OptionalStringSchema = (0, valibot_1.optional)((0, valibot_1.string)());
 exports.NullableStringSchema = (0, valibot_1.nullable)((0, valibot_1.string)());
@@ -31317,7 +31317,7 @@ module.exports = parseParams
 
 /***/ }),
 
-/***/ 9986:
+/***/ 4216:
 /***/ ((module) => {
 
 "use strict";
@@ -31371,6 +31371,7 @@ __export(src_exports, {
   _addIssue: () => _addIssue,
   _isLuhnAlgo: () => _isLuhnAlgo,
   _isValidObjectKey: () => _isValidObjectKey,
+  _joinExpects: () => _joinExpects,
   _stringify: () => _stringify,
   any: () => any,
   array: () => array,
@@ -31752,6 +31753,15 @@ function _isLuhnAlgo(input) {
 // src/utils/_isValidObjectKey/_isValidObjectKey.ts
 function _isValidObjectKey(object2, key) {
   return Object.hasOwn(object2, key) && key !== "__proto__" && key !== "prototype" && key !== "constructor";
+}
+
+// src/utils/_joinExpects/_joinExpects.ts
+function _joinExpects(values, separator) {
+  const list = [...new Set(values)];
+  if (list.length > 1) {
+    return `(${list.join(` ${separator} `)})`;
+  }
+  return list[0] ?? "never";
 }
 
 // src/utils/entriesFromList/entriesFromList.ts
@@ -32719,7 +32729,10 @@ function mimeType(requirement, message) {
     type: "mime_type",
     reference: mimeType,
     async: false,
-    expects: requirement.map((option) => `"${option}"`).join(" | ") || "never",
+    expects: _joinExpects(
+      requirement.map((option) => `"${option}"`),
+      "|"
+    ),
     requirement,
     message,
     _run(dataset, config2) {
@@ -33989,7 +34002,7 @@ function enum_(enum__, message) {
     kind: "schema",
     type: "enum",
     reference: enum_,
-    expects: options.map(_stringify).join(" | ") || "never",
+    expects: _joinExpects(options.map(_stringify), "|"),
     async: false,
     enum: enum__,
     options,
@@ -34108,7 +34121,10 @@ function intersect(options, message) {
     kind: "schema",
     type: "intersect",
     reference: intersect,
-    expects: [...new Set(options.map((option) => option.expects))].join(" & ") || "never",
+    expects: _joinExpects(
+      options.map((option) => option.expects),
+      "&"
+    ),
     async: false,
     options,
     message,
@@ -34171,7 +34187,10 @@ function intersectAsync(options, message) {
     kind: "schema",
     type: "intersect",
     reference: intersectAsync,
-    expects: [...new Set(options.map((option) => option.expects))].join(" & ") || "never",
+    expects: _joinExpects(
+      options.map((option) => option.expects),
+      "&"
+    ),
     async: true,
     options,
     message,
@@ -34811,7 +34830,7 @@ function nonNullish(wrapped, message) {
     kind: "schema",
     type: "non_nullish",
     reference: nonNullish,
-    expects: "!null & !undefined",
+    expects: "(!null & !undefined)",
     async: false,
     wrapped,
     message,
@@ -34831,7 +34850,7 @@ function nonNullishAsync(wrapped, message) {
     kind: "schema",
     type: "non_nullish",
     reference: nonNullishAsync,
-    expects: "!null & !undefined",
+    expects: "(!null & !undefined)",
     async: true,
     wrapped,
     message,
@@ -34911,7 +34930,7 @@ function nullable(wrapped, ...args) {
     kind: "schema",
     type: "nullable",
     reference: nullable,
-    expects: `${wrapped.expects} | null`,
+    expects: `(${wrapped.expects} | null)`,
     async: false,
     wrapped,
     _run(dataset, config2) {
@@ -34943,7 +34962,7 @@ function nullableAsync(wrapped, ...args) {
     kind: "schema",
     type: "nullable",
     reference: nullableAsync,
-    expects: `${wrapped.expects} | null`,
+    expects: `(${wrapped.expects} | null)`,
     async: true,
     wrapped,
     async _run(dataset, config2) {
@@ -34975,7 +34994,7 @@ function nullish(wrapped, ...args) {
     kind: "schema",
     type: "nullish",
     reference: nullish,
-    expects: `${wrapped.expects} | null | undefined`,
+    expects: `(${wrapped.expects} | null | undefined)`,
     async: false,
     wrapped,
     _run(dataset, config2) {
@@ -35007,7 +35026,7 @@ function nullishAsync(wrapped, ...args) {
     kind: "schema",
     type: "nullish",
     reference: nullishAsync,
-    expects: `${wrapped.expects} | null | undefined`,
+    expects: `(${wrapped.expects} | null | undefined)`,
     async: true,
     wrapped,
     async _run(dataset, config2) {
@@ -35401,7 +35420,7 @@ function optional(wrapped, ...args) {
     kind: "schema",
     type: "optional",
     reference: optional,
-    expects: `${wrapped.expects} | undefined`,
+    expects: `(${wrapped.expects} | undefined)`,
     async: false,
     wrapped,
     _run(dataset, config2) {
@@ -35433,7 +35452,7 @@ function optionalAsync(wrapped, ...args) {
     kind: "schema",
     type: "optional",
     reference: optionalAsync,
-    expects: `${wrapped.expects} | undefined`,
+    expects: `(${wrapped.expects} | undefined)`,
     async: true,
     wrapped,
     async _run(dataset, config2) {
@@ -35465,7 +35484,7 @@ function picklist(options, message) {
     kind: "schema",
     type: "picklist",
     reference: picklist,
-    expects: options.map(_stringify).join(" | ") || "never",
+    expects: _joinExpects(options.map(_stringify), "|"),
     async: false,
     options,
     message,
@@ -36523,7 +36542,10 @@ function union(options, message) {
     kind: "schema",
     type: "union",
     reference: union,
-    expects: [...new Set(options.map((option) => option.expects))].join(" | ") || "never",
+    expects: _joinExpects(
+      options.map((option) => option.expects),
+      "|"
+    ),
     async: false,
     options,
     message,
@@ -36584,7 +36606,10 @@ function unionAsync(options, message) {
     kind: "schema",
     type: "union",
     reference: unionAsync,
-    expects: [...new Set(options.map((option) => option.expects))].join(" | ") || "never",
+    expects: _joinExpects(
+      options.map((option) => option.expects),
+      "|"
+    ),
     async: true,
     options,
     message,
@@ -36655,15 +36680,15 @@ function unknown() {
 }
 
 // src/schemas/variant/utils/_discriminators/_discriminators.ts
-function _discriminators(key, options, set2 = /* @__PURE__ */ new Set()) {
+function _discriminators(key, options, list = []) {
   for (const schema of options) {
     if (schema.type === "variant") {
-      _discriminators(key, schema.options, set2);
+      _discriminators(key, schema.options, list);
     } else {
-      set2.add(schema.entries[key].expects);
+      list.push(schema.entries[key].expects);
     }
   }
-  return set2;
+  return list;
 }
 
 // src/schemas/variant/variant.ts
@@ -36706,7 +36731,10 @@ function variant(key, options, message) {
           }
         }
         if (!expectedDiscriminators) {
-          expectedDiscriminators = [..._discriminators(this.key, this.options)].join(" | ") || "never";
+          expectedDiscriminators = _joinExpects(
+            _discriminators(this.key, this.options),
+            "|"
+          );
         }
         _addIssue(this, "type", dataset, config2, {
           input: discriminator,
@@ -36769,7 +36797,10 @@ function variantAsync(key, options, message) {
           }
         }
         if (!expectedDiscriminators) {
-          expectedDiscriminators = [..._discriminators(this.key, this.options)].join(" | ") || "never";
+          expectedDiscriminators = _joinExpects(
+            _discriminators(this.key, this.options),
+            "|"
+          );
         }
         _addIssue(this, "type", dataset, config2, {
           input: discriminator,
