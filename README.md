@@ -46,7 +46,7 @@ jobs:
     permissions:
       actions: write
       contents: read
-    uses: 4m-mazi/souji-action/.github/workflows/_souji.yml@v1.4.1
+    uses: 4m-mazi/souji-action/.github/workflows/_souji.yml@v1.4.2
     with:
       branch-names: ${{ inputs.branchNames }}
 ```
@@ -78,7 +78,7 @@ jobs:
       actions: write
     steps:
       - name: Cleanup
-        uses: 4m-mazi/souji-action@v1.4.1
+        uses: 4m-mazi/souji-action@v1.4.2
         with:
           branch-names: ${{ inputs.branchNames }}
 ```
