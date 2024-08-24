@@ -524,8 +524,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.OidcClient = void 0;
-const http_client_1 = __nccwpck_require__(2066);
-const auth_1 = __nccwpck_require__(7433);
+const http_client_1 = __nccwpck_require__(6634);
+const auth_1 = __nccwpck_require__(2177);
 const core_1 = __nccwpck_require__(9093);
 class OidcClient {
     static createHttpClient(allowRetry = true, maxRetry = 10) {
@@ -1143,7 +1143,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getApiBaseUrl = exports.getProxyFetch = exports.getProxyAgentDispatcher = exports.getProxyAgent = exports.getAuthString = void 0;
-const httpClient = __importStar(__nccwpck_require__(2066));
+const httpClient = __importStar(__nccwpck_require__(6634));
 const undici_1 = __nccwpck_require__(7181);
 function getAuthString(token, options) {
     if (!token && !options.auth) {
@@ -1247,7 +1247,7 @@ exports.getOctokitOptions = getOctokitOptions;
 
 /***/ }),
 
-/***/ 7433:
+/***/ 2177:
 /***/ (function(__unused_webpack_module, exports) {
 
 "use strict";
@@ -1335,7 +1335,7 @@ exports.PersonalAccessTokenCredentialHandler = PersonalAccessTokenCredentialHand
 
 /***/ }),
 
-/***/ 2066:
+/***/ 6634:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
 "use strict";
@@ -1377,7 +1377,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.HttpClient = exports.isHttps = exports.HttpClientResponse = exports.HttpClientError = exports.getProxyUrl = exports.MediaTypes = exports.Headers = exports.HttpCodes = void 0;
 const http = __importStar(__nccwpck_require__(3685));
 const https = __importStar(__nccwpck_require__(5687));
-const pm = __importStar(__nccwpck_require__(7866));
+const pm = __importStar(__nccwpck_require__(4318));
 const tunnel = __importStar(__nccwpck_require__(4225));
 const undici_1 = __nccwpck_require__(7181);
 var HttpCodes;
@@ -1902,7 +1902,7 @@ class HttpClient {
         }
         const usingSsl = parsedUrl.protocol === 'https:';
         proxyAgent = new undici_1.ProxyAgent(Object.assign({ uri: proxyUrl.href, pipelining: !this._keepAlive ? 0 : 1 }, ((proxyUrl.username || proxyUrl.password) && {
-            token: `${proxyUrl.username}:${proxyUrl.password}`
+            token: `Basic ${Buffer.from(`${proxyUrl.username}:${proxyUrl.password}`).toString('base64')}`
         })));
         this._proxyAgentDispatcher = proxyAgent;
         if (usingSsl && this._ignoreSslError) {
@@ -1994,7 +1994,7 @@ const lowercaseKeys = (obj) => Object.keys(obj).reduce((c, k) => ((c[k.toLowerCa
 
 /***/ }),
 
-/***/ 7866:
+/***/ 4318:
 /***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
