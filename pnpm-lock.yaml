@@ -15,8 +15,8 @@ importers:
         specifier: 6.0.0
         version: 6.0.0
       valibot:
-        specifier: 0.38.0
-        version: 0.38.0(typescript@5.5.4)
+        specifier: 0.39.0
+        version: 0.39.0(typescript@5.5.4)
     devDependencies:
       '@eslint/js':
         specifier: 9.9.1
@@ -1905,8 +1905,8 @@ packages:
     resolution: {integrity: sha512-kiGUalWN+rgBJ/1OHZsBtU4rXZOfj/7rKQxULKlIzwzQSvMJUUNgPwJEEh7gU6xEVxC0ahoOBvN2YI8GH6FNgA==}
     engines: {node: '>=10.12.0'}
 
-  valibot@0.38.0:
-    resolution: {integrity: sha512-RCJa0fetnzp+h+KN9BdgYOgtsMAG9bfoJ9JSjIhFHobKWVWyzM3jjaeNTdpFK9tQtf3q1sguXeERJ/LcmdFE7w==}
+  valibot@0.39.0:
+    resolution: {integrity: sha512-d+vE8SDRNy9zKg6No5MHz2tdz8H6CW8X3OdqYdmlhnoqQmEoM6Hu0hJUrZv3tPSVrzZkIIMCtdCQtMzcM6NCWw==}
     peerDependencies:
       typescript: '>=5'
     peerDependenciesMeta:
@@ -4161,7 +4161,7 @@ snapshots:
       '@types/istanbul-lib-coverage': 2.0.6
       convert-source-map: 2.0.0
 
-  valibot@0.38.0(typescript@5.5.4):
+  valibot@0.39.0(typescript@5.5.4):
     optionalDependencies:
       typescript: 5.5.4
 
