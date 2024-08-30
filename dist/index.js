@@ -29397,7 +29397,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getRef = void 0;
-const v = __importStar(__nccwpck_require__(4937));
+const v = __importStar(__nccwpck_require__(6355));
 const schema_1 = __nccwpck_require__(3731);
 const utils_1 = __nccwpck_require__(1356);
 const getRef = ({ eventName, payload }) => {
@@ -29460,7 +29460,7 @@ exports.getRef = getRef;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NullableStringSchema = exports.OptionalStringSchema = exports.StringSchema = void 0;
-const valibot_1 = __nccwpck_require__(4937);
+const valibot_1 = __nccwpck_require__(6355);
 exports.StringSchema = (0, valibot_1.string)();
 exports.OptionalStringSchema = (0, valibot_1.optional)((0, valibot_1.string)());
 exports.NullableStringSchema = (0, valibot_1.nullable)((0, valibot_1.string)());
@@ -31317,7 +31317,7 @@ module.exports = parseParams
 
 /***/ }),
 
-/***/ 4937:
+/***/ 6355:
 /***/ ((module) => {
 
 "use strict";
@@ -31364,6 +31364,7 @@ __export(src_exports, {
   MAC48_REGEX: () => MAC48_REGEX,
   MAC64_REGEX: () => MAC64_REGEX,
   MAC_REGEX: () => MAC_REGEX,
+  NANO_ID_REGEX: () => NANO_ID_REGEX,
   OCTAL_REGEX: () => OCTAL_REGEX,
   ULID_REGEX: () => ULID_REGEX,
   UUID_REGEX: () => UUID_REGEX,
@@ -31478,6 +31479,7 @@ __export(src_exports, {
   minValue: () => minValue,
   multipleOf: () => multipleOf,
   nan: () => nan,
+  nanoid: () => nanoid,
   never: () => never,
   nonEmpty: () => nonEmpty,
   nonNullable: () => nonNullable,
@@ -31567,6 +31569,8 @@ __export(src_exports, {
   ulid: () => ulid,
   undefined: () => undefined_,
   undefined_: () => undefined_,
+  undefinedable: () => undefinedable,
+  undefinedableAsync: () => undefinedableAsync,
   union: () => union,
   unionAsync: () => unionAsync,
   unknown: () => unknown,
@@ -31623,6 +31627,7 @@ var ISO_WEEK_REGEX = /^\d{4}-W(?:0[1-9]|[1-4]\d|5[0-3])$/u;
 var MAC48_REGEX = /^(?:[\da-f]{2}:){5}[\da-f]{2}$|^(?:[\da-f]{2}-){5}[\da-f]{2}$|^(?:[\da-f]{4}\.){2}[\da-f]{4}$/iu;
 var MAC64_REGEX = /^(?:[\da-f]{2}:){7}[\da-f]{2}$|^(?:[\da-f]{2}-){7}[\da-f]{2}$|^(?:[\da-f]{4}\.){3}[\da-f]{4}$|^(?:[\da-f]{4}:){3}[\da-f]{4}$/iu;
 var MAC_REGEX = /^(?:[\da-f]{2}:){5}[\da-f]{2}$|^(?:[\da-f]{2}-){5}[\da-f]{2}$|^(?:[\da-f]{4}\.){2}[\da-f]{4}$|^(?:[\da-f]{2}:){7}[\da-f]{2}$|^(?:[\da-f]{2}-){7}[\da-f]{2}$|^(?:[\da-f]{4}\.){3}[\da-f]{4}$|^(?:[\da-f]{4}:){3}[\da-f]{4}$/iu;
+var NANO_ID_REGEX = /^[\w-]+$/u;
 var OCTAL_REGEX = /^(?:0o)?[0-7]+$/iu;
 var ULID_REGEX = /^[\da-hjkmnp-tv-z]{26}$/iu;
 var UUID_REGEX = /^[\da-f]{8}(?:-[\da-f]{4}){3}-[\da-f]{12}$/iu;
@@ -32846,6 +32851,25 @@ function multipleOf(requirement, message) {
     _run(dataset, config2) {
       if (dataset.typed && dataset.value % this.requirement !== 0) {
         _addIssue(this, "multiple", dataset, config2);
+      }
+      return dataset;
+    }
+  };
+}
+
+// src/actions/nanoid/nanoid.ts
+function nanoid(message) {
+  return {
+    kind: "validation",
+    type: "nanoid",
+    reference: nanoid,
+    async: false,
+    expects: null,
+    requirement: NANO_ID_REGEX,
+    message,
+    _run(dataset, config2) {
+      if (dataset.typed && !this.requirement.test(dataset.value)) {
+        _addIssue(this, "Nano ID", dataset, config2);
       }
       return dataset;
     }
@@ -36519,6 +36543,70 @@ function undefined_(message) {
       return dataset;
     }
   };
+}
+
+// src/schemas/undefinedable/undefinedable.ts
+function undefinedable(wrapped, ...args) {
+  const schema = {
+    kind: "schema",
+    type: "undefinedable",
+    reference: undefinedable,
+    expects: `(${wrapped.expects} | undefined)`,
+    async: false,
+    wrapped,
+    _run(dataset, config2) {
+      if (dataset.value === void 0) {
+        if ("default" in this) {
+          dataset.value = getDefault(
+            this,
+            dataset,
+            config2
+          );
+        }
+        if (dataset.value === void 0) {
+          dataset.typed = true;
+          return dataset;
+        }
+      }
+      return this.wrapped._run(dataset, config2);
+    }
+  };
+  if (0 in args) {
+    schema.default = args[0];
+  }
+  return schema;
+}
+
+// src/schemas/undefinedable/undefinedableAsync.ts
+function undefinedableAsync(wrapped, ...args) {
+  const schema = {
+    kind: "schema",
+    type: "undefinedable",
+    reference: undefinedableAsync,
+    expects: `(${wrapped.expects} | undefined)`,
+    async: true,
+    wrapped,
+    async _run(dataset, config2) {
+      if (dataset.value === void 0) {
+        if ("default" in this) {
+          dataset.value = await getDefault(
+            this,
+            dataset,
+            config2
+          );
+        }
+        if (dataset.value === void 0) {
+          dataset.typed = true;
+          return dataset;
+        }
+      }
+      return this.wrapped._run(dataset, config2);
+    }
+  };
+  if (0 in args) {
+    schema.default = args[0];
+  }
+  return schema;
 }
 
 // src/schemas/union/utils/_subIssues/_subIssues.ts
