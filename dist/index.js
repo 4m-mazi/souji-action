@@ -29397,7 +29397,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getRef = void 0;
-const v = __importStar(__nccwpck_require__(6355));
+const v = __importStar(__nccwpck_require__(6114));
 const schema_1 = __nccwpck_require__(3731);
 const utils_1 = __nccwpck_require__(1356);
 const getRef = ({ eventName, payload }) => {
@@ -29460,7 +29460,7 @@ exports.getRef = getRef;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NullableStringSchema = exports.OptionalStringSchema = exports.StringSchema = void 0;
-const valibot_1 = __nccwpck_require__(6355);
+const valibot_1 = __nccwpck_require__(6114);
 exports.StringSchema = (0, valibot_1.string)();
 exports.OptionalStringSchema = (0, valibot_1.optional)((0, valibot_1.string)());
 exports.NullableStringSchema = (0, valibot_1.nullable)((0, valibot_1.string)());
@@ -31317,7 +31317,7 @@ module.exports = parseParams
 
 /***/ }),
 
-/***/ 6355:
+/***/ 6114:
 /***/ ((module) => {
 
 "use strict";
@@ -36767,21 +36767,8 @@ function unknown() {
   };
 }
 
-// src/schemas/variant/utils/_discriminators/_discriminators.ts
-function _discriminators(key, options, list = []) {
-  for (const schema of options) {
-    if (schema.type === "variant") {
-      _discriminators(key, schema.options, list);
-    } else {
-      list.push(schema.entries[key].expects);
-    }
-  }
-  return list;
-}
-
 // src/schemas/variant/variant.ts
 function variant(key, options, message) {
-  let expectedDiscriminators;
   return {
     kind: "schema",
     type: "variant",
@@ -36794,46 +36781,69 @@ function variant(key, options, message) {
     _run(dataset, config2) {
       const input = dataset.value;
       if (input && typeof input === "object") {
-        const discriminator = input[this.key];
-        if (this.key in input) {
-          let outputDataset;
-          for (const schema of this.options) {
-            if (schema.type === "variant" || !schema.entries[this.key]._run(
-              { typed: false, value: discriminator },
-              config2
-            ).issues) {
-              const optionDataset = schema._run(
-                { typed: false, value: input },
-                config2
-              );
-              if (!optionDataset.issues) {
-                return optionDataset;
+        let outputDataset;
+        let maxDiscriminatorPriority = 0;
+        let invalidDiscriminatorKey = this.key;
+        let expectedDiscriminators = [];
+        const parseOptions = (variant2, allKeys) => {
+          for (const schema of variant2.options) {
+            if (schema.type === "variant") {
+              parseOptions(schema, new Set(allKeys).add(schema.key));
+            } else {
+              let keysAreValid = true;
+              let currentPriority = 0;
+              for (const currentKey of allKeys) {
+                if (schema.entries[currentKey]._run(
+                  // @ts-expect-error
+                  { typed: false, value: input[currentKey] },
+                  config2
+                ).issues) {
+                  keysAreValid = false;
+                  if (invalidDiscriminatorKey !== currentKey && (maxDiscriminatorPriority < currentPriority || maxDiscriminatorPriority === currentPriority && currentKey in input && !(invalidDiscriminatorKey in input))) {
+                    maxDiscriminatorPriority = currentPriority;
+                    invalidDiscriminatorKey = currentKey;
+                    expectedDiscriminators = [];
+                  }
+                  if (invalidDiscriminatorKey === currentKey) {
+                    expectedDiscriminators.push(
+                      schema.entries[currentKey].expects
+                    );
+                  }
+                  break;
+                }
+                currentPriority++;
               }
-              if (!outputDataset || !outputDataset.typed && optionDataset.typed) {
-                outputDataset = optionDataset;
+              if (keysAreValid) {
+                const optionDataset = schema._run(
+                  { typed: false, value: input },
+                  config2
+                );
+                if (!outputDataset || !outputDataset.typed && optionDataset.typed) {
+                  outputDataset = optionDataset;
+                }
               }
             }
+            if (outputDataset && !outputDataset.issues) {
+              break;
+            }
           }
-          if (outputDataset) {
-            return outputDataset;
-          }
-        }
-        if (!expectedDiscriminators) {
-          expectedDiscriminators = _joinExpects(
-            _discriminators(this.key, this.options),
-            "|"
-          );
+        };
+        parseOptions(this, /* @__PURE__ */ new Set([this.key]));
+        if (outputDataset) {
+          return outputDataset;
         }
         _addIssue(this, "type", dataset, config2, {
-          input: discriminator,
-          expected: expectedDiscriminators,
+          // @ts-expect-error
+          input: input[invalidDiscriminatorKey],
+          expected: _joinExpects(expectedDiscriminators, "|"),
           path: [
             {
               type: "object",
               origin: "value",
               input,
-              key: this.key,
-              value: discriminator
+              key: invalidDiscriminatorKey,
+              // @ts-expect-error
+              value: input[invalidDiscriminatorKey]
             }
           ]
         });
@@ -36847,7 +36857,6 @@ function variant(key, options, message) {
 
 // src/schemas/variant/variantAsync.ts
 function variantAsync(key, options, message) {
-  let expectedDiscriminators;
   return {
     kind: "schema",
     type: "variant",
@@ -36860,46 +36869,69 @@ function variantAsync(key, options, message) {
     async _run(dataset, config2) {
       const input = dataset.value;
       if (input && typeof input === "object") {
-        const discriminator = input[this.key];
-        if (this.key in input) {
-          let outputDataset;
-          for (const schema of this.options) {
-            if (schema.type === "variant" || !(await schema.entries[this.key]._run(
-              { typed: false, value: discriminator },
-              config2
-            )).issues) {
-              const optionDataset = await schema._run(
-                { typed: false, value: input },
-                config2
-              );
-              if (!optionDataset.issues) {
-                return optionDataset;
+        let outputDataset;
+        let maxDiscriminatorPriority = 0;
+        let invalidDiscriminatorKey = this.key;
+        let expectedDiscriminators = [];
+        const parseOptions = async (variant2, allKeys) => {
+          for (const schema of variant2.options) {
+            if (schema.type === "variant") {
+              await parseOptions(schema, new Set(allKeys).add(schema.key));
+            } else {
+              let keysAreValid = true;
+              let currentPriority = 0;
+              for (const currentKey of allKeys) {
+                if ((await schema.entries[currentKey]._run(
+                  // @ts-expect-error
+                  { typed: false, value: input[currentKey] },
+                  config2
+                )).issues) {
+                  keysAreValid = false;
+                  if (invalidDiscriminatorKey !== currentKey && (maxDiscriminatorPriority < currentPriority || maxDiscriminatorPriority === currentPriority && currentKey in input && !(invalidDiscriminatorKey in input))) {
+                    maxDiscriminatorPriority = currentPriority;
+                    invalidDiscriminatorKey = currentKey;
+                    expectedDiscriminators = [];
+                  }
+                  if (invalidDiscriminatorKey === currentKey) {
+                    expectedDiscriminators.push(
+                      schema.entries[currentKey].expects
+                    );
+                  }
+                  break;
+                }
+                currentPriority++;
               }
-              if (!outputDataset || !outputDataset.typed && optionDataset.typed) {
-                outputDataset = optionDataset;
+              if (keysAreValid) {
+                const optionDataset = await schema._run(
+                  { typed: false, value: input },
+                  config2
+                );
+                if (!outputDataset || !outputDataset.typed && optionDataset.typed) {
+                  outputDataset = optionDataset;
+                }
               }
             }
+            if (outputDataset && !outputDataset.issues) {
+              break;
+            }
           }
-          if (outputDataset) {
-            return outputDataset;
-          }
-        }
-        if (!expectedDiscriminators) {
-          expectedDiscriminators = _joinExpects(
-            _discriminators(this.key, this.options),
-            "|"
-          );
+        };
+        await parseOptions(this, /* @__PURE__ */ new Set([this.key]));
+        if (outputDataset) {
+          return outputDataset;
         }
         _addIssue(this, "type", dataset, config2, {
-          input: discriminator,
-          expected: expectedDiscriminators,
+          // @ts-expect-error
+          input: input[invalidDiscriminatorKey],
+          expected: _joinExpects(expectedDiscriminators, "|"),
           path: [
             {
               type: "object",
               origin: "value",
               input,
-              key: this.key,
-              value: discriminator
+              key: invalidDiscriminatorKey,
+              // @ts-expect-error
+              value: input[invalidDiscriminatorKey]
             }
           ]
         });
