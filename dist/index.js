@@ -29397,7 +29397,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getRef = void 0;
-const v = __importStar(__nccwpck_require__(8883));
+const v = __importStar(__nccwpck_require__(5238));
 const schema_1 = __nccwpck_require__(3731);
 const utils_1 = __nccwpck_require__(1356);
 const getRef = ({ eventName, payload }) => {
@@ -29460,7 +29460,7 @@ exports.getRef = getRef;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NullableStringSchema = exports.OptionalStringSchema = exports.StringSchema = void 0;
-const valibot_1 = __nccwpck_require__(8883);
+const valibot_1 = __nccwpck_require__(5238);
 exports.StringSchema = (0, valibot_1.string)();
 exports.OptionalStringSchema = (0, valibot_1.optional)((0, valibot_1.string)());
 exports.NullableStringSchema = (0, valibot_1.nullable)((0, valibot_1.string)());
@@ -31317,7 +31317,7 @@ module.exports = parseParams
 
 /***/ }),
 
-/***/ 8883:
+/***/ 5238:
 /***/ ((module) => {
 
 "use strict";
@@ -31347,6 +31347,7 @@ __export(src_exports, {
   BIC_REGEX: () => BIC_REGEX,
   CUID2_REGEX: () => CUID2_REGEX,
   DECIMAL_REGEX: () => DECIMAL_REGEX,
+  DIGITS_REGEX: () => DIGITS_REGEX,
   EMAIL_REGEX: () => EMAIL_REGEX,
   EMOJI_REGEX: () => EMOJI_REGEX,
   HEXADECIMAL_REGEX: () => HEXADECIMAL_REGEX,
@@ -31400,6 +31401,7 @@ __export(src_exports, {
   deleteSchemaMessage: () => deleteSchemaMessage,
   deleteSpecificMessage: () => deleteSpecificMessage,
   description: () => description,
+  digits: () => digits,
   email: () => email,
   emoji: () => emoji,
   empty: () => empty,
@@ -31472,6 +31474,7 @@ __export(src_exports, {
   maxLength: () => maxLength,
   maxSize: () => maxSize,
   maxValue: () => maxValue,
+  metadata: () => metadata,
   mimeType: () => mimeType,
   minBytes: () => minBytes,
   minLength: () => minLength,
@@ -31553,6 +31556,7 @@ __export(src_exports, {
   strictTupleAsync: () => strictTupleAsync,
   string: () => string,
   symbol: () => symbol,
+  title: () => title,
   toLowerCase: () => toLowerCase,
   toMaxValue: () => toMaxValue,
   toMinValue: () => toMinValue,
@@ -31603,7 +31607,8 @@ function awaitAsync() {
 var BASE64_REGEX = /^(?:[\da-z+/]{4})*(?:[\da-z+/]{2}==|[\da-z+/]{3}=)?$/iu;
 var BIC_REGEX = /^[A-Z]{6}(?!00)[\dA-Z]{2}(?:[\dA-Z]{3})?$/u;
 var CUID2_REGEX = /^[a-z][\da-z]*$/u;
-var DECIMAL_REGEX = /^\d+$/u;
+var DECIMAL_REGEX = /^[+-]?\d+(?:\.\d+)?$/u;
+var DIGITS_REGEX = /^\d+$/u;
 var EMAIL_REGEX = /^[\w+-]+(?:\.[\w+-]+)*@[\da-z]+(?:[.-][\da-z]+)*\.[a-z]{2,}$/iu;
 var EMOJI_REGEX = (
   // eslint-disable-next-line redos-detector/no-unsafe-regex, regexp/no-dupe-disjunctions -- false positives
@@ -32068,6 +32073,25 @@ function description(description_) {
     type: "description",
     reference: description,
     description: description_
+  };
+}
+
+// src/actions/digits/digits.ts
+function digits(message) {
+  return {
+    kind: "validation",
+    type: "digits",
+    reference: digits,
+    async: false,
+    expects: null,
+    requirement: DIGITS_REGEX,
+    message,
+    _run(dataset, config2) {
+      if (dataset.typed && !this.requirement.test(dataset.value)) {
+        _addIssue(this, "digits", dataset, config2);
+      }
+      return dataset;
+    }
   };
 }
 
@@ -32727,6 +32751,16 @@ function maxValue(requirement, message) {
   };
 }
 
+// src/actions/metadata/metadata.ts
+function metadata(metadata_) {
+  return {
+    kind: "metadata",
+    type: "metadata",
+    reference: metadata,
+    metadata: metadata_
+  };
+}
+
 // src/actions/mimeType/mimeType.ts
 function mimeType(requirement, message) {
   return {
@@ -33305,6 +33339,16 @@ function startsWith(requirement, message) {
       }
       return dataset;
     }
+  };
+}
+
+// src/actions/title/title.ts
+function title(title_) {
+  return {
+    kind: "metadata",
+    type: "title",
+    reference: title,
+    title: title_
   };
 }
 
