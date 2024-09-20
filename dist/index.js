@@ -29397,7 +29397,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getRef = void 0;
-const v = __importStar(__nccwpck_require__(5238));
+const v = __importStar(__nccwpck_require__(1175));
 const schema_1 = __nccwpck_require__(3731);
 const utils_1 = __nccwpck_require__(1356);
 const getRef = ({ eventName, payload }) => {
@@ -29460,7 +29460,7 @@ exports.getRef = getRef;
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NullableStringSchema = exports.OptionalStringSchema = exports.StringSchema = void 0;
-const valibot_1 = __nccwpck_require__(5238);
+const valibot_1 = __nccwpck_require__(1175);
 exports.StringSchema = (0, valibot_1.string)();
 exports.OptionalStringSchema = (0, valibot_1.optional)((0, valibot_1.string)());
 exports.NullableStringSchema = (0, valibot_1.nullable)((0, valibot_1.string)());
@@ -31317,7 +31317,7 @@ module.exports = parseParams
 
 /***/ }),
 
-/***/ 5238:
+/***/ 1175:
 /***/ ((module) => {
 
 "use strict";
@@ -31721,7 +31721,6 @@ function _addIssue(context, label, dataset, config2, other) {
     expected,
     received,
     message: `Invalid ${label}: ${expected ? `Expected ${expected} but r` : "R"}eceived ${received}`,
-    // @ts-expect-error
     requirement: context.requirement,
     path: other?.path,
     issues: other?.issues,
@@ -31730,10 +31729,12 @@ function _addIssue(context, label, dataset, config2, other) {
     abortPipeEarly: config2.abortPipeEarly
   };
   const isSchema = context.kind === "schema";
-  const message = other?.message ?? // @ts-expect-error
-  context.message ?? getSpecificMessage(context.reference, issue.lang) ?? (isSchema ? getSchemaMessage(issue.lang) : null) ?? config2.message ?? getGlobalMessage(issue.lang);
+  const message = other?.message ?? context.message ?? getSpecificMessage(context.reference, issue.lang) ?? (isSchema ? getSchemaMessage(issue.lang) : null) ?? config2.message ?? getGlobalMessage(issue.lang);
   if (message) {
-    issue.message = typeof message === "function" ? message(issue) : message;
+    issue.message = typeof message === "function" ? (
+      // @ts-expect-error
+      message(issue)
+    ) : message;
   }
   if (isSchema) {
     dataset.typed = false;
