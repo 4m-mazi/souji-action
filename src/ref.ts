@@ -1,10 +1,9 @@
-import * as v from 'valibot'
 import { WebhookPayload } from '@actions/github/lib/interfaces'
 import {
-  OptionalStringSchema,
-  NullableStringSchema,
-  StringSchema
-} from './schema'
+  optionalStringParser,
+  nullableStringParser,
+  stringParser
+} from './parser'
 import { convertRef } from './internal/utils'
 
 export const getRef = ({
@@ -17,38 +16,31 @@ export const getRef = ({
   switch (eventName) {
     case 'check_run':
       return convertRef(
-        v.parse(
-          NullableStringSchema,
-          payload.check_run.check_suite.head_branch
-        ),
+        nullableStringParser(payload.check_run.check_suite.head_branch),
         { refType: 'branch' }
       )
     case 'check_suite':
-      return convertRef(
-        v.parse(NullableStringSchema, payload.check_suite.head_branch),
-        { refType: 'branch' }
-      )
+      return convertRef(nullableStringParser(payload.check_suite.head_branch), {
+        refType: 'branch'
+      })
     case 'create':
     case 'delete':
-      return convertRef(v.parse(NullableStringSchema, payload.ref), {
+      return convertRef(nullableStringParser(payload.ref), {
         refType: payload.ref_type
       })
     case 'deployment_status':
       return convertRef(
-        v.parse(OptionalStringSchema, payload.workflow_run?.head_branch),
+        optionalStringParser(payload.workflow_run?.head_branch),
         {
           refType: 'branch'
         }
       )
     case 'issue_comment':
-      return convertRef(
-        v.parse(StringSchema, payload.issue?.number.toString()),
-        {
-          refType: 'pull'
-        }
-      )
+      return convertRef(stringParser(payload.issue?.number.toString()), {
+        refType: 'pull'
+      })
     case 'merge_group':
-      return v.parse(StringSchema, payload.merge_group.head_ref)
+      return stringParser(payload.merge_group.head_ref)
     case 'pull_request':
     case 'pull_request_review':
     case 'pull_request_review_comment':
@@ -57,11 +49,10 @@ export const getRef = ({
         refType: 'pull'
       })
     case 'push':
-      return v.parse(StringSchema, payload.ref)
+      return stringParser(payload.ref)
     case 'registry_package':
       return convertRef(
-        v.parse(
-          OptionalStringSchema,
+        optionalStringParser(
           payload.registry_package?.package_version?.release?.tag_name
         ),
         {
@@ -69,14 +60,14 @@ export const getRef = ({
         }
       )
     case 'release':
-      return convertRef(v.parse(StringSchema, payload.release.tag_name), {
+      return convertRef(stringParser(payload.release.tag_name), {
         refType: 'tag'
       })
     case 'workflow_dispatch':
-      return v.parse(StringSchema, payload.ref)
+      return stringParser(payload.ref)
     case 'workflow_run':
       return convertRef(
-        v.parse(NullableStringSchema, payload.workflow_run.head_branch),
+        nullableStringParser(payload.workflow_run.head_branch),
         {
           refType: 'branch'
         }
