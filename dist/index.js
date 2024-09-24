@@ -29367,60 +29367,56 @@ async function run() {
 
 /***/ }),
 
-/***/ 2636:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+/***/ 7937:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
 
 "use strict";
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.nullableStringParser = exports.optionalStringParser = exports.stringParser = void 0;
+const valibot_1 = __nccwpck_require__(1175);
+const StringSchema = (0, valibot_1.string)();
+const OptionalStringSchema = (0, valibot_1.optional)((0, valibot_1.string)());
+const NullableStringSchema = (0, valibot_1.nullable)((0, valibot_1.string)());
+exports.stringParser = (0, valibot_1.parser)(StringSchema);
+exports.optionalStringParser = (0, valibot_1.parser)(OptionalStringSchema);
+exports.nullableStringParser = (0, valibot_1.parser)(NullableStringSchema);
+
+
+/***/ }),
+
+/***/ 2636:
+/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
+
+"use strict";
+
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getRef = void 0;
-const v = __importStar(__nccwpck_require__(1175));
-const schema_1 = __nccwpck_require__(3731);
+const parser_1 = __nccwpck_require__(7937);
 const utils_1 = __nccwpck_require__(1356);
 const getRef = ({ eventName, payload }) => {
     switch (eventName) {
         case 'check_run':
-            return (0, utils_1.convertRef)(v.parse(schema_1.NullableStringSchema, payload.check_run.check_suite.head_branch), { refType: 'branch' });
+            return (0, utils_1.convertRef)((0, parser_1.nullableStringParser)(payload.check_run.check_suite.head_branch), { refType: 'branch' });
         case 'check_suite':
-            return (0, utils_1.convertRef)(v.parse(schema_1.NullableStringSchema, payload.check_suite.head_branch), { refType: 'branch' });
+            return (0, utils_1.convertRef)((0, parser_1.nullableStringParser)(payload.check_suite.head_branch), {
+                refType: 'branch'
+            });
         case 'create':
         case 'delete':
-            return (0, utils_1.convertRef)(v.parse(schema_1.NullableStringSchema, payload.ref), {
+            return (0, utils_1.convertRef)((0, parser_1.nullableStringParser)(payload.ref), {
                 refType: payload.ref_type
             });
         case 'deployment_status':
-            return (0, utils_1.convertRef)(v.parse(schema_1.OptionalStringSchema, payload.workflow_run?.head_branch), {
+            return (0, utils_1.convertRef)((0, parser_1.optionalStringParser)(payload.workflow_run?.head_branch), {
                 refType: 'branch'
             });
         case 'issue_comment':
-            return (0, utils_1.convertRef)(v.parse(schema_1.StringSchema, payload.issue?.number.toString()), {
+            return (0, utils_1.convertRef)((0, parser_1.stringParser)(payload.issue?.number.toString()), {
                 refType: 'pull'
             });
         case 'merge_group':
-            return v.parse(schema_1.StringSchema, payload.merge_group.head_ref);
+            return (0, parser_1.stringParser)(payload.merge_group.head_ref);
         case 'pull_request':
         case 'pull_request_review':
         case 'pull_request_review_comment':
@@ -29429,19 +29425,19 @@ const getRef = ({ eventName, payload }) => {
                 refType: 'pull'
             });
         case 'push':
-            return v.parse(schema_1.StringSchema, payload.ref);
+            return (0, parser_1.stringParser)(payload.ref);
         case 'registry_package':
-            return (0, utils_1.convertRef)(v.parse(schema_1.OptionalStringSchema, payload.registry_package?.package_version?.release?.tag_name), {
+            return (0, utils_1.convertRef)((0, parser_1.optionalStringParser)(payload.registry_package?.package_version?.release?.tag_name), {
                 refType: 'tag'
             });
         case 'release':
-            return (0, utils_1.convertRef)(v.parse(schema_1.StringSchema, payload.release.tag_name), {
+            return (0, utils_1.convertRef)((0, parser_1.stringParser)(payload.release.tag_name), {
                 refType: 'tag'
             });
         case 'workflow_dispatch':
-            return v.parse(schema_1.StringSchema, payload.ref);
+            return (0, parser_1.stringParser)(payload.ref);
         case 'workflow_run':
-            return (0, utils_1.convertRef)(v.parse(schema_1.NullableStringSchema, payload.workflow_run.head_branch), {
+            return (0, utils_1.convertRef)((0, parser_1.nullableStringParser)(payload.workflow_run.head_branch), {
                 refType: 'branch'
             });
         default:
@@ -29449,21 +29445,6 @@ const getRef = ({ eventName, payload }) => {
     }
 };
 exports.getRef = getRef;
-
-
-/***/ }),
-
-/***/ 3731:
-/***/ ((__unused_webpack_module, exports, __nccwpck_require__) => {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.NullableStringSchema = exports.OptionalStringSchema = exports.StringSchema = void 0;
-const valibot_1 = __nccwpck_require__(1175);
-exports.StringSchema = (0, valibot_1.string)();
-exports.OptionalStringSchema = (0, valibot_1.optional)((0, valibot_1.string)());
-exports.NullableStringSchema = (0, valibot_1.nullable)((0, valibot_1.string)());
 
 
 /***/ }),
