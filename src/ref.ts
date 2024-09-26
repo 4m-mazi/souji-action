@@ -1,10 +1,10 @@
-import { WebhookPayload } from '@actions/github/lib/interfaces'
+import { WebhookPayload } from '@actions/github/lib/interfaces.js'
 import {
   optionalStringParser,
   nullableStringParser,
   stringParser
-} from './parser'
-import { convertRef } from './internal/utils'
+} from './parser.js'
+import { convertRef } from './internal/utils.js'
 
 export const getRef = ({
   eventName,
