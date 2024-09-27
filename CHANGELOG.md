@@ -1,5 +1,21 @@
 # Changelog
 
+## [1.4.4](https://github.com/4m-mazi/souji-action/compare/v1.4.3...v1.4.4) (2024-09-27)
+
+
+### Dependencies
+
+* bump valibot from 0.39.0 to 0.40.0 ([#210](https://github.com/4m-mazi/souji-action/issues/210)) ([2657622](https://github.com/4m-mazi/souji-action/commit/26576222eb694351be5bb988212f28883f18addf))
+* bump valibot from 0.40.0 to 0.41.0 ([#215](https://github.com/4m-mazi/souji-action/issues/215)) ([b53eb5f](https://github.com/4m-mazi/souji-action/commit/b53eb5f4cd0fb115dfb248a635d1c9f8e948d8bd))
+* bump valibot from 0.41.0 to 0.42.0 ([#230](https://github.com/4m-mazi/souji-action/issues/230)) ([f100080](https://github.com/4m-mazi/souji-action/commit/f100080ce8af69d206eb5114197d175704ea15ae))
+* bump valibot from 0.42.0 to 0.42.1 ([#237](https://github.com/4m-mazi/souji-action/issues/237)) ([305e046](https://github.com/4m-mazi/souji-action/commit/305e046a0daac085e593087686d00f6086c37422))
+
+
+### Code Refactoring
+
+* replace valibot schemas with parser functions ([#238](https://github.com/4m-mazi/souji-action/issues/238)) ([c90f95a](https://github.com/4m-mazi/souji-action/commit/c90f95a085a00b92d6f44201c68d8a754a6538e8))
+* switch to ES modules ([#250](https://github.com/4m-mazi/souji-action/issues/250)) ([222f614](https://github.com/4m-mazi/souji-action/commit/222f614d0e8a75067bce751ed2bad6c039322471))
+
 ## [1.4.3](https://github.com/4m-mazi/souji-action/compare/v1.4.2...v1.4.3) (2024-08-24)
 
 
