@@ -1,9 +1,9 @@
 import * as core from '@actions/core'
 import * as github from '@actions/github'
-import { getRef } from './ref'
+import { getRef } from './ref.js'
 import type * as types from '@octokit/openapi-types'
-import { getInputs } from './get-inputs'
-import { convertRef } from './internal/utils'
+import { getInputs } from './get-inputs.js'
+import { convertRef } from './internal/utils.js'
 
 type Cache =
   types.components['schemas']['actions-cache-list']['actions_caches'][number]

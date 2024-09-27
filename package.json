@@ -16,6 +16,7 @@
     "cache",
     "delete"
   ],
+  "type": "module",
   "exports": {
     ".": "./dist/index.js"
   },
@@ -37,7 +38,7 @@
   },
   "license": "MIT",
   "jest": {
-    "preset": "ts-jest",
+    "preset": "ts-jest/presets/default-esm",
     "verbose": true,
     "clearMocks": true,
     "testEnvironment": "node",
@@ -52,8 +53,8 @@
       "/node_modules/",
       "/dist/"
     ],
-    "transform": {
-      "^.+\\.ts$": "ts-jest"
+    "moduleNameMapper": {
+      "^(\\.{1,2}/.*)\\.js$": "$1"
     },
     "coverageReporters": [
       "json-summary",
