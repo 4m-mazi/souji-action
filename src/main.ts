@@ -4,6 +4,7 @@ import { getRef } from './ref.js'
 import type * as types from '@octokit/openapi-types'
 import { getInputs } from './get-inputs.js'
 import { convertRef } from './internal/utils.js'
+import type { StrictContext } from './types.js'
 
 type Cache =
   types.components['schemas']['actions-cache-list']['actions_caches'][number]
@@ -56,7 +57,7 @@ export async function run(): Promise<void> {
     const octokit = github.getOctokit(token)
 
     // get repostiory information
-    const { repo, eventName, payload } = github.context
+    const context = github.context as StrictContext
 
     const infoNull = (name: string): never[] => {
       core.info(`🤔 Could not determine deletion target: ${name}`)
@@ -68,15 +69,13 @@ export async function run(): Promise<void> {
 
     const refs: string[] =
       branchNames.length === 0
-        ? [getRef({ eventName, payload })].flatMap(x =>
-            x ? x : infoNull(eventName)
-          )
+        ? [getRef(context)].flatMap(x => (x ? x : infoNull(context.eventName)))
         : branchNames
             .map(branchName => convertRef(branchName, { refType: 'branch' }))
             .filter(ref => ref !== null)
 
     for (const ref of refs) {
-      await deleteRefActionsCaches(octokit, repo, ref, isDryRun)
+      await deleteRefActionsCaches(octokit, context.repo, ref, isDryRun)
     }
 
     core.info(`${prefix({ isDryRun })}✅ Done`)
