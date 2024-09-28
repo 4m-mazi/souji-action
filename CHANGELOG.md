@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.5](https://github.com/4m-mazi/souji-action/compare/v1.4.4...v1.4.5) (2024-09-28)
+
+
+### Code Refactoring
+
+* use `@octokit/webhooks-types` for stronger typing ([#253](https://github.com/4m-mazi/souji-action/issues/253)) ([3c17657](https://github.com/4m-mazi/souji-action/commit/3c1765759367cbd0da7dbf59e62ea6c3ba7d3cbe))
+
 ## [1.4.4](https://github.com/4m-mazi/souji-action/compare/v1.4.3...v1.4.4) (2024-09-27)
 
 
