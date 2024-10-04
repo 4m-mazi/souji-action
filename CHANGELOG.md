@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.6](https://github.com/4m-mazi/souji-action/compare/v1.4.5...v1.4.6) (2024-10-04)
+
+
+### Dependencies
+
+* bump @actions/core from 1.10.1 to 1.11.0 ([#260](https://github.com/4m-mazi/souji-action/issues/260)) ([30cbaee](https://github.com/4m-mazi/souji-action/commit/30cbaee5336542e667512135139d93186df0d59d))
+
 ## [1.4.5](https://github.com/4m-mazi/souji-action/compare/v1.4.4...v1.4.5) (2024-09-28)
 
 
