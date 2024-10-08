@@ -39,7 +39,7 @@ jobs:
           echo "result=$result" >> "$GITHUB_OUTPUT"
 
       - name: 'Checkout caller workflow'
-        uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
         with:
           sparse-checkout: |
             ${{ steps.get-path.outputs.result }}
@@ -63,7 +63,7 @@ jobs:
             "${{ steps.escape.outputs.result }}"
 
       - name: 'Checkout souji-action'
-        uses: actions/checkout@d632683dd7b4114ad314bca15554477dd762a938 # v4.2.0
+        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
         with:
           repository: 4m-mazi/souji-action
           ref: ${{ steps.get-ref.outputs.result }}
