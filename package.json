@@ -71,7 +71,7 @@
     "@actions/github": "6.0.0"
   },
   "devDependencies": {
-    "@eslint/js": "9.13.0",
+    "@eslint/js": "9.14.0",
     "@octokit/openapi-types": "22.2.0",
     "@octokit/webhooks-types": "7.6.1",
     "@types/eslint-config-prettier": "6.11.3",
