@@ -49,8 +49,8 @@ importers:
         specifier: 28.9.0
         version: 28.9.0(@typescript-eslint/eslint-plugin@8.13.0(@typescript-eslint/parser@8.13.0(eslint@9.14.0)(typescript@5.6.3))(eslint@9.14.0)(typescript@5.6.3))(eslint@9.14.0)(jest@29.7.0(@types/node@22.9.0))(typescript@5.6.3)
       eslint-plugin-jsonc:
-        specifier: 2.16.0
-        version: 2.16.0(eslint@9.14.0)
+        specifier: 2.17.0
+        version: 2.17.0(eslint@9.14.0)
       globals:
         specifier: 15.12.0
         version: 15.12.0
@@ -934,8 +934,8 @@ packages:
     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
     engines: {node: '>=10'}
 
-  eslint-compat-utils@0.5.1:
-    resolution: {integrity: sha512-3z3vFexKIEnjHE3zCMRo6fn/e44U7T1khUjg+Hp0ZQMCigh28rALD0nPFBcGZuiLC5rLZa2ubQHDRln09JfU2Q==}
+  eslint-compat-utils@0.6.0:
+    resolution: {integrity: sha512-1vVBdI/HLS6HTHVQCJGlN+LOF0w1Rs/WB9se23mQr84cRM0iMM8PulMFFhQdQ1BvS0cGwjpis4xziI91Rk0l6g==}
     engines: {node: '>=12'}
     peerDependencies:
       eslint: '>=6.0.0'
@@ -959,8 +959,8 @@ packages:
       jest:
         optional: true
 
-  eslint-plugin-jsonc@2.16.0:
-    resolution: {integrity: sha512-Af/ZL5mgfb8FFNleH6KlO4/VdmDuTqmM+SPnWcdoWywTetv7kq+vQe99UyQb9XO3b0OWLVuTH7H0d/PXYCMdSg==}
+  eslint-plugin-jsonc@2.17.0:
+    resolution: {integrity: sha512-wvifOtlIGDx6IFqVpuavPYLRA0yCoaFpoIUOW46rgS2F91brwCyWbEDXjrNrsThZ6rImTuDH9Biu5XHxaaL1qA==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: '>=6.0.0'
@@ -2999,7 +2999,7 @@ snapshots:
 
   escape-string-regexp@4.0.0: {}
 
-  eslint-compat-utils@0.5.1(eslint@9.14.0):
+  eslint-compat-utils@0.6.0(eslint@9.14.0):
     dependencies:
       eslint: 9.14.0
       semver: 7.6.3
@@ -3019,11 +3019,11 @@ snapshots:
       - supports-color
       - typescript
 
-  eslint-plugin-jsonc@2.16.0(eslint@9.14.0):
+  eslint-plugin-jsonc@2.17.0(eslint@9.14.0):
     dependencies:
       '@eslint-community/eslint-utils': 4.4.1(eslint@9.14.0)
       eslint: 9.14.0
-      eslint-compat-utils: 0.5.1(eslint@9.14.0)
+      eslint-compat-utils: 0.6.0(eslint@9.14.0)
       espree: 9.6.1
       graphemer: 1.4.0
       jsonc-eslint-parser: 2.4.0
