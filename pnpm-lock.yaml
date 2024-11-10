@@ -49,8 +49,8 @@ importers:
         specifier: 28.9.0
         version: 28.9.0(@typescript-eslint/eslint-plugin@8.13.0(@typescript-eslint/parser@8.13.0(eslint@9.14.0)(typescript@5.6.3))(eslint@9.14.0)(typescript@5.6.3))(eslint@9.14.0)(jest@29.7.0(@types/node@22.9.0))(typescript@5.6.3)
       eslint-plugin-jsonc:
-        specifier: 2.17.0
-        version: 2.17.0(eslint@9.14.0)
+        specifier: 2.18.0
+        version: 2.18.0(eslint@9.14.0)
       globals:
         specifier: 15.12.0
         version: 15.12.0
@@ -946,6 +946,17 @@ packages:
     peerDependencies:
       eslint: '>=7.0.0'
 
+  eslint-json-compat-utils@0.1.2:
+    resolution: {integrity: sha512-juula0Fo5/UfrcLaeWbCIAihGvPuK2/ddBt1kkT1K41o4LjygqXIi2NcbF/7qw//B0ET5dFxv9wBHU7FAZdDfw==}
+    engines: {node: '>=12'}
+    peerDependencies:
+      '@eslint/json': '*'
+      eslint: '*'
+      jsonc-eslint-parser: ^2.4.0
+    peerDependenciesMeta:
+      '@eslint/json':
+        optional: true
+
   eslint-plugin-jest@28.9.0:
     resolution: {integrity: sha512-rLu1s1Wf96TgUUxSw6loVIkNtUjq1Re7A9QdCCHSohnvXEBAjuL420h0T/fMmkQlNsQP2GhQzEUpYHPfxBkvYQ==}
     engines: {node: ^16.10.0 || ^18.12.0 || >=20.0.0}
@@ -959,8 +970,8 @@ packages:
       jest:
         optional: true
 
-  eslint-plugin-jsonc@2.17.0:
-    resolution: {integrity: sha512-wvifOtlIGDx6IFqVpuavPYLRA0yCoaFpoIUOW46rgS2F91brwCyWbEDXjrNrsThZ6rImTuDH9Biu5XHxaaL1qA==}
+  eslint-plugin-jsonc@2.18.0:
+    resolution: {integrity: sha512-5HoxMECa+GMyxP1/zR8u/Hacbv7hbQ6NKGHKNPIX6rL2Dwktzgyf4+Qa1urgFc8HDg6rgOr5qhRSR40XicBL6w==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
     peerDependencies:
       eslint: '>=6.0.0'
@@ -3008,6 +3019,11 @@ snapshots:
     dependencies:
       eslint: 9.14.0
 
+  eslint-json-compat-utils@0.1.2(eslint@9.14.0)(jsonc-eslint-parser@2.4.0):
+    dependencies:
+      eslint: 9.14.0
+      jsonc-eslint-parser: 2.4.0
+
   eslint-plugin-jest@28.9.0(@typescript-eslint/eslint-plugin@8.13.0(@typescript-eslint/parser@8.13.0(eslint@9.14.0)(typescript@5.6.3))(eslint@9.14.0)(typescript@5.6.3))(eslint@9.14.0)(jest@29.7.0(@types/node@22.9.0))(typescript@5.6.3):
     dependencies:
       '@typescript-eslint/utils': 8.12.2(eslint@9.14.0)(typescript@5.6.3)
@@ -3019,16 +3035,19 @@ snapshots:
       - supports-color
       - typescript
 
-  eslint-plugin-jsonc@2.17.0(eslint@9.14.0):
+  eslint-plugin-jsonc@2.18.0(eslint@9.14.0):
     dependencies:
       '@eslint-community/eslint-utils': 4.4.1(eslint@9.14.0)
       eslint: 9.14.0
       eslint-compat-utils: 0.6.0(eslint@9.14.0)
+      eslint-json-compat-utils: 0.1.2(eslint@9.14.0)(jsonc-eslint-parser@2.4.0)
       espree: 9.6.1
       graphemer: 1.4.0
       jsonc-eslint-parser: 2.4.0
       natural-compare: 1.4.0
       synckit: 0.6.2
+    transitivePeerDependencies:
+      - '@eslint/json'
 
   eslint-scope@7.2.2:
     dependencies:
