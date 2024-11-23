@@ -39,7 +39,7 @@ jobs:
           echo "result=$result" >> "$GITHUB_OUTPUT"
 
       - name: 'Checkout caller workflow'
-        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           sparse-checkout: |
             ${{ steps.get-path.outputs.result }}
@@ -57,13 +57,13 @@ jobs:
 
       - id: get-ref
         name: 'Get ref of souji-workflow'
-        uses: docker://mikefarah/yq:4.44.3-githubaction@sha256:435a6a8add65c16dd4c1db3ea1d3a8dc3374b747b390253bd8b106ded16352f5
+        uses: docker://mikefarah/yq:4.44.5-githubaction@sha256:c961355bdf78bc20830bd7f2440e7171c3ab9074489b4ba0dabcd10b845d1239
         with:
           args: |-
             "${{ steps.escape.outputs.result }}"
 
       - name: 'Checkout souji-action'
-        uses: actions/checkout@eef61447b9ff4aafe5dcd4e0bbf5d482be7e7871 # v4.2.1
+        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
         with:
           repository: 4m-mazi/souji-action
           ref: ${{ steps.get-ref.outputs.result }}
