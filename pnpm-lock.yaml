@@ -61,8 +61,8 @@ importers:
         specifier: 1.2.0
         version: 1.2.0
       prettier:
-        specifier: 3.3.3
-        version: 3.3.3
+        specifier: 3.4.0
+        version: 3.4.0
       prettier-eslint:
         specifier: 16.3.0
         version: 16.3.0
@@ -1659,8 +1659,8 @@ packages:
       svelte-eslint-parser:
         optional: true
 
-  prettier@3.3.3:
-    resolution: {integrity: sha512-i2tDNA0O5IrMO757lfrdQZCc2jPNDVntV0m/+4whiDfWaTKfMNgR7Qz0NAeGz/nRqF4m5/6CLzbP4/liHt12Ew==}
+  prettier@3.4.0:
+    resolution: {integrity: sha512-/OXNZcLyWkfo13ofOW5M7SLh+k5pnIs07owXK2teFpnfaOEcycnSy7HQxldaVX1ZP/7Q8oO1eDuQJNwbomQq5Q==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -3943,7 +3943,7 @@ snapshots:
       indent-string: 4.0.0
       lodash.merge: 4.6.2
       loglevel-colored-level-prefix: 1.0.0
-      prettier: 3.3.3
+      prettier: 3.4.0
       pretty-format: 29.7.0
       require-relative: 0.8.7
       typescript: 5.7.2
@@ -3951,7 +3951,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  prettier@3.3.3: {}
+  prettier@3.4.0: {}
 
   pretty-format@29.7.0:
     dependencies:
