@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.10](https://github.com/4m-mazi/souji-action/compare/v1.4.9...v1.4.10) (2025-01-12)
+
+
+### Dependencies
+
+* **workflow:** bump mikefarah/yq to v4.45.1 ([#396](https://github.com/4m-mazi/souji-action/issues/396)) ([4308145](https://github.com/4m-mazi/souji-action/commit/43081451af3010094ad6ade9509b5d45043230c2))
+
 ## [1.4.9](https://github.com/4m-mazi/souji-action/compare/v1.4.8...v1.4.9) (2024-12-08)
 
 
