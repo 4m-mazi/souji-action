@@ -71,7 +71,7 @@
     "@actions/github": "6.0.0"
   },
   "devDependencies": {
-    "@eslint/js": "9.18.0",
+    "@eslint/js": "9.19.0",
     "@octokit/openapi-types": "23.0.1",
     "@octokit/webhooks-types": "7.6.1",
     "@types/eslint-config-prettier": "6.11.3",
@@ -79,7 +79,7 @@
     "@types/jest": "29.5.14",
     "@types/node": "22.10.10",
     "@vercel/ncc": "0.38.3",
-    "eslint": "9.18.0",
+    "eslint": "9.19.0",
     "eslint-config-prettier": "10.0.1",
     "eslint-plugin-jest": "28.11.0",
     "eslint-plugin-jsonc": "2.19.1",
