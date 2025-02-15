@@ -19,8 +19,8 @@ importers:
         specifier: 9.20.0
         version: 9.20.0
       '@octokit/openapi-types':
-        specifier: 23.0.1
-        version: 23.0.1
+        specifier: 24.0.0
+        version: 24.0.0
       '@octokit/webhooks-types':
         specifier: 7.6.1
         version: 7.6.1
@@ -462,6 +462,9 @@ packages:
 
   '@octokit/openapi-types@23.0.1':
     resolution: {integrity: sha512-izFjMJ1sir0jn0ldEKhZ7xegCTj/ObmEDlEfpFrx4k/JyZSMRHbO3/rBwgE7f3m2DHt+RrNGIVw4wSmwnm3t/g==}
+
+  '@octokit/openapi-types@24.0.0':
+    resolution: {integrity: sha512-os8hmzrBPC3PDzXq93/9vBcxMvb90yw2SF76ANon+eP1HzVyd+TshkAkMX6bIm3bY5T3uXieQFDibcc35vM9mQ==}
 
   '@octokit/plugin-paginate-rest@9.2.1':
     resolution: {integrity: sha512-wfGhE/TAkXZRLjksFXuDZdmGnJQHvtU/joFQdweXUgzo1XwvBCD4o4+75NtFfjfLK5IwLf9vHTfSiU3sLRYpRw==}
@@ -2493,6 +2496,8 @@ snapshots:
   '@octokit/openapi-types@20.0.0': {}
 
   '@octokit/openapi-types@23.0.1': {}
+
+  '@octokit/openapi-types@24.0.0': {}
 
   '@octokit/plugin-paginate-rest@9.2.1(@octokit/core@5.2.0)':
     dependencies:
