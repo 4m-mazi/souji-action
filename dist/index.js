@@ -3544,7 +3544,7 @@ module.exports = __toCommonJS(dist_src_exports);
 var import_universal_user_agent = __nccwpck_require__(9279);
 var import_before_after_hook = __nccwpck_require__(8841);
 var import_request = __nccwpck_require__(5833);
-var import_graphql = __nccwpck_require__(5432);
+var import_graphql = __nccwpck_require__(5219);
 var import_auth_token = __nccwpck_require__(6602);
 
 // pkg/dist-src/version.js
@@ -4064,7 +4064,7 @@ var endpoint = withDefaults(null, DEFAULTS);
 
 /***/ }),
 
-/***/ 5432:
+/***/ 5219:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
@@ -4087,18 +4087,18 @@ var __copyProps = (to, from, except, desc) => {
 var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // pkg/dist-src/index.js
-var dist_src_exports = {};
-__export(dist_src_exports, {
+var index_exports = {};
+__export(index_exports, {
   GraphqlResponseError: () => GraphqlResponseError,
   graphql: () => graphql2,
   withCustomRequest: () => withCustomRequest
 });
-module.exports = __toCommonJS(dist_src_exports);
+module.exports = __toCommonJS(index_exports);
 var import_request3 = __nccwpck_require__(5833);
 var import_universal_user_agent = __nccwpck_require__(9279);
 
 // pkg/dist-src/version.js
-var VERSION = "7.1.0";
+var VERSION = "7.1.1";
 
 // pkg/dist-src/with-defaults.js
 var import_request2 = __nccwpck_require__(5833);
@@ -4146,8 +4146,7 @@ function graphql(request2, query, options) {
       );
     }
     for (const key in options) {
-      if (!FORBIDDEN_VARIABLE_OPTIONS.includes(key))
-        continue;
+      if (!FORBIDDEN_VARIABLE_OPTIONS.includes(key)) continue;
       return Promise.reject(
         new Error(
           `[@octokit/graphql] "${key}" cannot be used as variable name`
