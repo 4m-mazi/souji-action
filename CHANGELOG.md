@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.4.12](https://github.com/4m-mazi/souji-action/compare/v1.4.11...v1.4.12) (2025-03-28)
+
+
+### Dependencies
+
+* lock file maintenance ([#460](https://github.com/4m-mazi/souji-action/issues/460)) ([4683c34](https://github.com/4m-mazi/souji-action/commit/4683c343a99026c836fb2a89f1c0eba9361ccb2b))
+* lock file maintenance ([#500](https://github.com/4m-mazi/souji-action/issues/500)) ([8f1d0d1](https://github.com/4m-mazi/souji-action/commit/8f1d0d13c23cc6168dd6c00852c2d1394d055483))
+
 ## [1.4.11](https://github.com/4m-mazi/souji-action/compare/v1.4.10...v1.4.11) (2025-01-21)
 
 
