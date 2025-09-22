@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.4.12](https://github.com/4m-mazi/souji-action/compare/v1.4.11...v1.4.12) (2025-09-22)
+
+
+### Dependencies
+
+* bump @actions/github from 6.0.0 to 6.0.1 ([#548](https://github.com/4m-mazi/souji-action/issues/548)) ([8e9e3c2](https://github.com/4m-mazi/souji-action/commit/8e9e3c2d9bc0c8e78d10b0bbe607922adc3967e1))
+* lock file maintenance ([#460](https://github.com/4m-mazi/souji-action/issues/460)) ([4683c34](https://github.com/4m-mazi/souji-action/commit/4683c343a99026c836fb2a89f1c0eba9361ccb2b))
+* lock file maintenance ([#500](https://github.com/4m-mazi/souji-action/issues/500)) ([8f1d0d1](https://github.com/4m-mazi/souji-action/commit/8f1d0d13c23cc6168dd6c00852c2d1394d055483))
+* **workflow:** bump mikefarah/yq to v4.45.2 ([#542](https://github.com/4m-mazi/souji-action/issues/542)) ([82de2b4](https://github.com/4m-mazi/souji-action/commit/82de2b4c61d2ab58fb59130e1a9bf6226424abb4))
+* **workflow:** bump mikefarah/yq to v4.45.3 ([#552](https://github.com/4m-mazi/souji-action/issues/552)) ([d5004bd](https://github.com/4m-mazi/souji-action/commit/d5004bd5017ccd96e07962c1ee70ce7b1f02d069))
+* **workflow:** bump mikefarah/yq to v4.45.4 ([#554](https://github.com/4m-mazi/souji-action/issues/554)) ([bfafa06](https://github.com/4m-mazi/souji-action/commit/bfafa06261c55e62c65163d723fdaec6683576f6))
+* **workflow:** bump mikefarah/yq to v4.46.1 ([#584](https://github.com/4m-mazi/souji-action/issues/584)) ([043143d](https://github.com/4m-mazi/souji-action/commit/043143d089b7a960d1b3454df449c1969f368135))
+
 ## [1.4.11](https://github.com/4m-mazi/souji-action/compare/v1.4.10...v1.4.11) (2025-01-21)
 
 
