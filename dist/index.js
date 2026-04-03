@@ -2057,9 +2057,9 @@ exports.getOctokitOptions = exports.GitHub = exports.defaults = exports.context 
 const Context = __importStar(__nccwpck_require__(3077));
 const Utils = __importStar(__nccwpck_require__(8399));
 // octokit + plugins
-const core_1 = __nccwpck_require__(1695);
-const plugin_rest_endpoint_methods_1 = __nccwpck_require__(1647);
-const plugin_paginate_rest_1 = __nccwpck_require__(342);
+const core_1 = __nccwpck_require__(1772);
+const plugin_rest_endpoint_methods_1 = __nccwpck_require__(6316);
+const plugin_paginate_rest_1 = __nccwpck_require__(8633);
 exports.context = new Context.Context();
 const baseUrl = Utils.getApiBaseUrl();
 exports.defaults = {
@@ -3514,7 +3514,7 @@ var createTokenAuth = function createTokenAuth2(token) {
 
 /***/ }),
 
-/***/ 1695:
+/***/ 1772:
 /***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
 
 
@@ -3549,13 +3549,28 @@ var import_graphql = __nccwpck_require__(2218);
 var import_auth_token = __nccwpck_require__(703);
 
 // pkg/dist-src/version.js
-var VERSION = "5.2.1";
+var VERSION = "5.2.2";
 
 // pkg/dist-src/index.js
 var noop = () => {
 };
 var consoleWarn = console.warn.bind(console);
 var consoleError = console.error.bind(console);
+function createLogger(logger = {}) {
+  if (typeof logger.debug !== "function") {
+    logger.debug = noop;
+  }
+  if (typeof logger.info !== "function") {
+    logger.info = noop;
+  }
+  if (typeof logger.warn !== "function") {
+    logger.warn = consoleWarn;
+  }
+  if (typeof logger.error !== "function") {
+    logger.error = consoleError;
+  }
+  return logger;
+}
 var userAgentTrail = `octokit-core.js/${VERSION} ${(0, import_universal_user_agent.getUserAgent)()}`;
 var Octokit = class {
   static {
@@ -3629,15 +3644,7 @@ var Octokit = class {
     }
     this.request = import_request.request.defaults(requestDefaults);
     this.graphql = (0, import_graphql.withCustomRequest)(this.request).defaults(requestDefaults);
-    this.log = Object.assign(
-      {
-        debug: noop,
-        info: noop,
-        warn: consoleWarn,
-        error: consoleError
-      },
-      options.log
-    );
+    this.log = createLogger(options.log);
     this.hook = hook;
     if (!options.authStrategy) {
       if (!options.auth) {
@@ -4221,7 +4228,7 @@ function withCustomRequest(customRequest) {
 
 /***/ }),
 
-/***/ 342:
+/***/ 8633:
 /***/ ((module) => {
 
 
@@ -4621,7 +4628,7 @@ paginateRest.VERSION = VERSION;
 
 /***/ }),
 
-/***/ 1647:
+/***/ 6316:
 /***/ ((module) => {
 
 
